@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="IT-компания по разработке мобильных приложений. Создаем инновационные решения для iOS и Android.">
+    <meta name="keywords" content="разработка мобильных приложений, iOS, Android, мобильная разработка, app development, мобильное приложение">
+    <meta name="author" content="IT Company">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="IT Company - Разработка мобильных приложений">
+    <meta property="og:description" content="Создаем инновационные мобильные приложения для iOS и Android">
+    <meta property="og:type" content="website">
+    <meta name="theme-color" content="#6366f1">
+    <title>IT Company - Разработка мобильных приложений</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- 3D Canvas Background -->
+    <canvas id="threeCanvas"></canvas>
+
+    <!-- Header -->
+    <header class="header">
+        <nav class="navbar">
+            <div class="container">
+                <div class="logo">
+                    <a href="#hero">
+                        <span class="logo-icon">📱</span>
+                        <span class="logo-text">IT<span class="logo-highlight">App</span></span>
+                    </a>
+                </div>
+                <button class="nav-toggle" aria-label="Переключить меню">
+                    <span class="hamburger"></span>
+                </button>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="#hero" class="nav-link">Главная</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#about" class="nav-link">О нас</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#services" class="nav-link">Услуги</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#portfolio" class="nav-link">Портфолио</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#testimonials" class="nav-link">Отзывы</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#contact" class="nav-link">Контакты</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="hero" class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title" data-aos="fade-up">
+                    Создаем инновационные <span class="highlight">мобильные приложения</span>
+                </h1>
+                <p class="hero-subtitle" data-aos="fade-up" data-aos-delay="200">
+                    Мы разрабатываем современные приложения для iOS и Android, объединяя инновационные технологии с интуитивно понятным дизайном
+                </p>
+                <div class="hero-buttons" data-aos="fade-up" data-aos-delay="400">
+                    <a href="#contact" class="btn btn-primary">Заказать разработку</a>
+                    <a href="#portfolio" class="btn btn-secondary">Посмотреть портфолио</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about">
+        <div class="container">
+            <div class="about-content">
+                <div class="about-text" data-aos="fade-right">
+                    <h2 class="section-title">О компании</h2>
+                    <p class="about-description">
+                        Мы — команда профессионалов, специализирующихся на разработке мобильных приложений. С 2020 года мы помогаем бизнесу расти благодаря цифровым решениям.
+                    </p>
+                    <p class="about-description">
+                        Наша миссия — создавать приложения, которые не только решают бизнес-задачи, но и вдохновляют пользователей. Мы используем передовые технологии и лучшие практики разработки, чтобы обеспечить высокое качество наших продуктов.
+                    </p>
+                    <div class="about-stats">
+                        <div class="stat-item">
+                            <span class="stat-number">150+</span>
+                            <span class="stat-label">Разработанных приложений</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">98%</span>
+                            <span class="stat-label">Удовлетворенных клиентов</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">5+</span>
+                            <span class="stat-label">Лет на рынке</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="about-image" data-aos="fade-left">
+                    <div class="about-placeholder">
+                        <span class="placeholder-icon">💻</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="services">
+        <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <h2 class="section-title">Наши услуги</h2>
+                <p class="section-subtitle">Полный цикл разработки мобильных приложений</p>
+            </div>
+            <div class="services-grid">
+                <div class="service-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="service-icon">📱</div>
+                    <h3 class="service-title">Разработка iOS приложений</h3>
+                    <p class="service-description">
+                        Создаем нативные приложения для iPhone и iPad на Swift и SwiftUI, обеспечивающие идеальную производительность и интеграцию с экосистемой Apple.
+                    </p>
+                </div>
+                <div class="service-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="service-icon">🤖</div>
+                    <h3 class="service-title">Разработка Android приложений</h3>
+                    <p class="service-description">
+                        Разрабатываем приложения для Android устройств на Kotlin и Java, с учетом всех рекомендаций Google и современных стандартов.
+                    </p>
+                </div>
+                <div class="service-card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="service-icon">🔄</div>
+                    <h3 class="service-title">Кроссплатформенная разработка</h3>
+                    <p class="service-description">
+                        Создаем приложения для обеих платформ одновременно с использованием React Native и Flutter для оптимизации затрат и сроков.
+                    </p>
+                </div>
+                <div class="service-card" data-aos="fade-up" data-aos-delay="400">
+                    <div class="service-icon">🎨</div>
+                    <h3 class="service-title">UI/UX дизайн</h3>
+                    <p class="service-description">
+                        Проектируем интуитивно понятные и привлекательные интерфейсы, которые обеспечивают отличный пользовательский опыт.
+                    </p>
+                </div>
+                <div class="service-card" data-aos="fade-up" data-aos-delay="500">
+                    <div class="service-icon">🚀</div>
+                    <h3 class="service-title">Поддержка и сопровождение</h3>
+                    <p class="service-description">
+                        Обеспечиваем постоянную поддержку приложений, обновления и улучшения после запуска продукта.
+                    </p>
+                </div>
+                <div class="service-card" data-aos="fade-up" data-aos-delay="600">
+                    <div class="service-icon">🔒</div>
+                    <h3 class="service-title">Безопасность</h3>
+                    <p class="service-description">
+                        Внедряем современные меры безопасности для защиты данных пользователей и корпоративной информации.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portfolio Section -->
+    <section id="portfolio" class="portfolio">
+        <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <h2 class="section-title">Наши проекты</h2>
+                <p class="section-subtitle">Портфолио успешных проектов</p>
+            </div>
+            <div class="portfolio-grid">
+                <div class="portfolio-item" data-aos="fade-up" data-aos-delay="100">
+                    <div class="portfolio-image">
+                        <span class="portfolio-placeholder">🛒</span>
+                    </div>
+                    <div class="portfolio-info">
+                        <h3 class="portfolio-title">Магазин электроники</h3>
+                        <p class="portfolio-category">E-commerce, iOS/Android</p>
+                    </div>
+                </div>
+                <div class="portfolio-item" data-aos="fade-up" data-aos-delay="200">
+                    <div class="portfolio-image">
+                        <span class="portfolio-placeholder">🏃</span>
+                    </div>
+                    <div class="portfolio-info">
+                        <h3 class="portfolio-title">Фитнес трекер Pro</h3>
+                        <p class="portfolio-category">Health & Fitness, iOS/Android</p>
+                    </div>
+                </div>
+                <div class="portfolio-item" data-aos="fade-up" data-aos-delay="300">
+                    <div class="portfolio-image">
+                        <span class="portfolio-placeholder">💼</span>
+                    </div>
+                    <div class="portfolio-info">
+                        <h3 class="portfolio-title">Финансовый ассистент</h3>
+                        <p class="portfolio-category">Finance, iOS/Android</p>
+                    </div>
+                </div>
+                <div class="portfolio-item" data-aos="fade-up" data-aos-delay="400">
+                    <div class="portfolio-image">
+                        <span class="portfolio-placeholder">🍽️</span>
+                    </div>
+                    <div class="portfolio-info">
+                        <h3 class="portfolio-title">Доставка еды</h3>
+                        <p class="portfolio-category">Food delivery, iOS/Android</p>
+                    </div>
+                </div>
+                <div class="portfolio-item" data-aos="fade-up" data-aos-delay="500">
+                    <div class="portfolio-image">
+                        <span class="portfolio-placeholder">🎓</span>
+                    </div>
+                    <div class="portfolio-info">
+                        <h3 class="portfolio-title">Образовательная платформа</h3>
+                        <p class="portfolio-category">Education, iOS/Android</p>
+                    </div>
+                </div>
+                <div class="portfolio-item" data-aos="fade-up" data-aos-delay="600">
+                    <div class="portfolio-image">
+                        <span class="portfolio-placeholder">✈️</span>
+                    </div>
+                    <div class="portfolio-info">
+                        <h3 class="portfolio-title">Бронирование отелей</h3>
+                        <p class="portfolio-category">Travel, iOS/Android</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="testimonials">
+        <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <h2 class="section-title">Отзывы клиентов</h2>
+                <p class="section-subtitle">Что говорят наши клиенты</p>
+            </div>
+            <div class="testimonials-grid">
+                <div class="testimonial-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="testimonial-rating">⭐⭐⭐⭐⭐</div>
+                    <p class="testimonial-text">
+                        "Отличная работа! Команда ITApp создала для нас качественное приложение, которое превзошло все ожидания. Сроки были соблюдены, а коммуникация на высшем уровне."
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">👤</div>
+                        <div class="author-info">
+                            <h4 class="author-name">Иван Петров</h4>
+                            <p class="author-position">CEO, TechStart</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="testimonial-rating">⭐⭐⭐⭐⭐</div>
+                    <p class="testimonial-text">
+                        "Работа с ITApp была приятной и продуктивной. Они поняли наши требования и реализовали все функции в срок. Рекомендуем как надежного партнера."
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">👤</div>
+                        <div class="author-info">
+                            <h4 class="author-name">Мария Сидорова</h4>
+                            <p class="author-position">Менеджер проектов, FitnessPro</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="testimonial-rating">⭐⭐⭐⭐⭐</div>
+                    <p class="testimonial-text">
+                        "Спасибо команде за профессионализм и внимание к деталям. Наши пользователи очень довольны новым приложением, а конверсии выросли на 40%."
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">👤</div>
+                        <div class="author-info">
+                            <h4 class="author-name">Алексей Кузнецов</h4>
+                            <p class="author-position">Директор, FinanceHub</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <h2 class="section-title">Свяжитесь с нами</h2>
+                <p class="section-subtitle">Готовы начать проект? Свяжитесь с нами!</p>
+            </div>
+            <div class="contact-content">
+                <div class="contact-info" data-aos="fade-right">
+                    <h3 class="contact-title">Контактная информация</h3>
+                    <p class="contact-description">
+                        Мы всегда рады ответить на ваши вопросы и обсудить ваш проект. Свяжитесь с нами любым удобным способом.
+                    </p>
+                    <div class="contact-details">
+                        <div class="contact-item">
+                            <span class="contact-icon">📍</span>
+                            <div class="contact-text">
+                                <p class="contact-label">Адрес</p>
+                                <p class="contact-value">г. Минск, ул. Примерная, 123</p>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <span class="contact-icon">📧</span>
+                            <div class="contact-text">
+                                <p class="contact-label">Email</p>
+                                <p class="contact-value">info@itapp.com</p>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <span class="contact-icon">📞</span>
+                            <div class="contact-text">
+                                <p class="contact-label">Телефон</p>
+                                <p class="contact-value">+375 (29) 123-45-67</p>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <span class="contact-icon">⏰</span>
+                            <div class="contact-text">
+                                <p class="contact-label">Режим работы</p>
+                                <p class="contact-value">Пн-Пт: 9:00-18:00</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="contact-form" data-aos="fade-left">
+                    <form class="form" action="#" method="POST">
+                        <div class="form-group">
+                            <label class="form-label" for="name">Ваше имя</label>
+                            <input class="form-input" type="text" id="name" name="name" required placeholder="Иван">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="email">Email</label>
+                            <input class="form-input" type="email" id="email" name="email" required placeholder="ivan@example.com">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="phone">Телефон</label>
+                            <input class="form-input" type="tel" id="phone" name="phone" required placeholder="+375 (29) 123-45-67">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="message">Сообщение</label>
+                            <textarea class="form-input" id="message" name="message" rows="5" required placeholder="Опишите ваш проект..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">Отправить сообщение</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="logo">
+                        <span class="logo-icon">📱</span>
+                        <span class="logo-text">IT<span class="logo-highlight">App</span></span>
+                    </div>
+                    <p class="footer-description">
+                        Профессиональная разработка мобильных приложений для бизнеса любого масштаба.
+                    </p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4 class="footer-column-title">Компания</h4>
+                        <ul class="footer-menu">
+                            <li><a href="#about">О нас</a></li>
+                            <li><a href="#services">Услуги</a></li>
+                            <li><a href="#portfolio">Портфолио</a></li>
+                            <li><a href="#contact">Контакты</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4 class="footer-column-title">Услуги</h4>
+                        <ul class="footer-menu">
+                            <li><a href="#services">iOS разработка</a></li>
+                            <li><a href="#services">Android разработка</a></li>
+                            <li><a href="#services">Кроссплатформа</a></li>
+                            <li><a href="#services">UI/UX дизайн</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4 class="footer-column-title">Контакты</h4>
+                        <ul class="footer-menu">
+                            <li><a href="mailto:info@itapp.com">info@itapp.com</a></li>
+                            <li><a href="tel:+375291234567">+375 (29) 123-45-67</a></li>
+                            <li><a href="#contact">Форма обратной связи</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p class="footer-bottom-text">&copy; 2026 IT Company. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
