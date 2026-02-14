@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MobileCode - Разработка мобильных приложений</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="navbar">
+            <div class="container">
+                <div class="nav-wrapper">
+                    <div class="logo">
+                        <i class="fas fa-mobile-alt"></i>
+                        <span>MobileCode</span>
+                    </div>
+                    <ul class="nav-menu">
+                        <li><a href="#home">Главная</a></li>
+                        <li><a href="#services">Услуги</a></li>
+                        <li><a href="#advantages">Преимущества</a></li>
+                        <li><a href="#portfolio">Портфолио</a></li>
+                        <li><a href="#technologies">Технологии</a></li>
+                        <li><a href="#contact">Контакты</a></li>
+                    </ul>
+                    <div class="burger">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div id="vanta-bg"></div>
+        <div class="container">
+            <div class="hero-content" data-aos="fade-up">
+                <h1 class="hero-title">Создаём мобильные приложения <span class="gradient-text">будущего</span></h1>
+                <p class="hero-subtitle">Разрабатываем iOS и Android приложения, которые делают бизнес успешнее</p>
+                <div class="hero-buttons">
+                    <a href="#contact" class="btn btn-primary">Обсудить проект</a>
+                    <a href="#portfolio" class="btn btn-secondary">Наши работы</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about">
+        <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <h2>О компании</h2>
+                <p>Мы команда профессионалов с опытом более 7 лет</p>
+            </div>
+            <div class="about-content">
+                <div class="about-card" data-aos="fade-right">
+                    <div class="about-icon">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <h3>Экспертиза</h3>
+                    <p>Более 150 успешно реализованных проектов для клиентов из разных стран</p>
+                </div>
+                <div class="about-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="about-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3>Команда</h3>
+                    <p>30+ опытных разработчиков, дизайнеров и менеджеров проектов</p>
+                </div>
+                <div class="about-card" data-aos="fade-left" data-aos-delay="200">
+                    <div class="about-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Результат</h3>
+                    <p>95% клиентов возвращаются к нам для развития своих проектов</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="services">
+        <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <h2>Наши услуги</h2>
+                <p>Полный цикл разработки мобильных приложений</p>
+            </div>
+            <div class="services-grid">
+                <div class="service-card" data-aos="zoom-in">
+                    <div class="service-icon">
+                        <i class="fab fa-apple"></i>
+                    </div>
+                    <h3>iOS разработка</h3>
+                    <p>Нативные приложения для iPhone и iPad на Swift с современным дизайном и высокой производительностью</p>
+                </div>
+                <div class="service-card" data-aos="zoom-in" data-aos-delay="100">
+                    <div class="service-icon">
+                        <i class="fab fa-android"></i>
+                    </div>
+                    <h3>Android разработка</h3>
+                    <p>Приложения для Android на Kotlin с адаптацией под все размеры экранов и версии ОС</p>
+                </div>
+                <div class="service-card" data-aos="zoom-in" data-aos-delay="200">
+                    <div class="service-icon">
+                        <i class="fas fa-sync-alt"></i>
+                    </div>
+                    <h3>Кроссплатформенная разработка</h3>
+                    <p>React Native и Flutter для одновременного запуска на iOS и Android с единой кодовой базой</p>
+                </div>
+                <div class="service-card" data-aos="zoom-in" data-aos-delay="300">
+                    <div class="service-icon">
+                        <i class="fas fa-pen-nib"></i>
+                    </div>
+                    <h3>UI/UX дизайн</h3>
+                    <p>Создание интуитивных интерфейсов с современным дизайном и отличным пользовательским опытом</p>
+                </div>
+                <div class="service-card" data-aos="zoom-in" data-aos-delay="400">
+                    <div class="service-icon">
+                        <i class="fas fa-server"></i>
+                    </div>
+                    <h3>Backend разработка</h3>
+                    <p>Разработка серверной части, API, баз данных для полноценной работы приложения</p>
+                </div>
+                <div class="service-card" data-aos="zoom-in" data-aos-delay="500">
+                    <div class="service-icon">
+                        <i class="fas fa-wrench"></i>
+                    </div>
+                    <h3>Поддержка и развитие</h3>
+                    <p>Техническая поддержка, обновления, добавление новых функций и масштабирование</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Advantages Section -->
+    <section id="advantages" class="advantages">
+        <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <h2>Почему выбирают нас</h2>
+                <p>Преимущества работы с MobileCode</p>
+            </div>
+            <div class="advantages-grid">
+                <div class="advantage-item" data-aos="fade-right">
+                    <div class="advantage-number">01</div>
+                    <h3>Прозрачность</h3>
+                    <p>Регулярные отчёты и демонстрации на каждом этапе разработки</p>
+                </div>
+                <div class="advantage-item" data-aos="fade-right" data-aos-delay="100">
+                    <div class="advantage-number">02</div>
+                    <h3>Сроки</h3>
+                    <p>Соблюдаем дедлайны и укладываемся в согласованные временные рамки</p>
+                </div>
+                <div class="advantage-item" data-aos="fade-right" data-aos-delay="200">
+                    <div class="advantage-number">03</div>
+                    <h3>Качество кода</h3>
+                    <p>Пишем чистый, документированный код с покрытием тестами</p>
+                </div>
+                <div class="advantage-item" data-aos="fade-right" data-aos-delay="300">
+                    <div class="advantage-number">04</div>
+                    <h3>Гибкость</h3>
+                    <p>Адаптируемся под ваши потребности и быстро реагируем на изменения</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portfolio Section -->
+    <section id="portfolio" class="portfolio">
+        <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <h2>Наши проекты</h2>
+                <p>Примеры успешно реализованных решений</p>
+            </div>
+            <div class="portfolio-grid">
+                <div class="portfolio-item" data-aos="flip-left">
+                    <div class="portfolio-image">
+                        <div class="portfolio-overlay">
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
+                    </div>
+                    <div class="portfolio-info">
+                        <h3>E-commerce приложение</h3>
+                        <p>Интернет-магазин с интеграцией платёжных систем</p>
+                        <div class="portfolio-tags">
+                            <span>iOS</span>
+                            <span>Android</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="portfolio-item" data-aos="flip-left" data-aos-delay="100">
+                    <div class="portfolio-image">
+                        <div class="portfolio-overlay">
+                            <i class="fas fa-heartbeat"></i>
+                        </div>
+                    </div>
+                    <div class="portfolio-info">
+                        <h3>Фитнес трекер</h3>
+                        <p>Приложение для отслеживания тренировок и питания</p>
+                        <div class="portfolio-tags">
+                            <span>React Native</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="portfolio-item" data-aos="flip-left" data-aos-delay="200">
+                    <div class="portfolio-image">
+                        <div class="portfolio-overlay">
+                            <i class="fas fa-wallet"></i>
+                        </div>
+                    </div>
+                    <div class="portfolio-info">
+                        <h3>Финтех решение</h3>
+                        <p>Мобильный банкинг с биометрической аутентификацией</p>
+                        <div class="portfolio-tags">
+                            <span>iOS</span>
+                            <span>Android</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technologies Section -->
+    <section id="technologies" class="technologies">
+        <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <h2>Технологии</h2>
+                <p>Современный стек для разработки</p>
+            </div>
+            <div class="tech-grid">
+                <div class="tech-item" data-aos="fade-up">
+                    <i class="fab fa-swift"></i>
+                    <p>Swift</p>
+                </div>
+                <div class="tech-item" data-aos="fade-up" data-aos-delay="50">
+                    <i class="fab fa-android"></i>
+                    <p>Kotlin</p>
+                </div>
+                <div class="tech-item" data-aos="fade-up" data-aos-delay="100">
+                    <i class="fab fa-react"></i>
+                    <p>React Native</p>
+                </div>
+                <div class="tech-item" data-aos="fade-up" data-aos-delay="150">
+                    <i class="fas fa-mobile"></i>
+                    <p>Flutter</p>
+                </div>
+                <div class="tech-item" data-aos="fade-up" data-aos-delay="200">
+                    <i class="fab fa-node-js"></i>
+                    <p>Node.js</p>
+                </div>
+                <div class="tech-item" data-aos="fade-up" data-aos-delay="250">
+                    <i class="fab fa-python"></i>
+                    <p>Python</p>
+                </div>
+                <div class="tech-item" data-aos="fade-up" data-aos-delay="300">
+                    <i class="fas fa-database"></i>
+                    <p>PostgreSQL</p>
+                </div>
+                <div class="tech-item" data-aos="fade-up" data-aos-delay="350">
+                    <i class="fab fa-aws"></i>
+                    <p>AWS</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <h2>Свяжитесь с нами</h2>
+                <p>Обсудим ваш проект бесплатно</p>
+            </div>
+            <div class="contact-wrapper">
+                <div class="contact-info" data-aos="fade-right">
+                    <h3>Контактная информация</h3>
+                    <div class="contact-item">
+                        <i class="fas fa-phone"></i>
+                        <span>+7 (495) 123-45-67</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <span>info@mobilecode.ru</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Москва, ул. Тверская, д. 10</span>
+                    </div>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-telegram"></i></a>
+                        <a href="#"><i class="fab fa-whatsapp"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+                <form class="contact-form" data-aos="fade-left">
+                    <div class="form-group">
+                        <input type="text" placeholder="Ваше имя" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" placeholder="Email" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="tel" placeholder="Телефон" required>
+                    </div>
+                    <div class="form-group">
+                        <textarea placeholder="Расскажите о вашем проекте" rows="5" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Отправить заявку</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <i class="fas fa-mobile-alt"></i>
+                    <span>MobileCode</span>
+                </div>
+                <p>&copy; 2026 MobileCode. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
