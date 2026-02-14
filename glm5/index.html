@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AppCraft - профессиональная разработка мобильных приложений для iOS и Android. Создаём приложения, которые меняют бизнес.">
+    <meta name="keywords" content="разработка мобильных приложений, iOS, Android, кроссплатформенная разработка, UI/UX дизайн">
+    <meta name="author" content="AppCraft">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="AppCraft - Разработка мобильных приложений">
+    <meta property="og:description" content="Создаём мобильные приложения, которые меняют бизнес. iOS, Android, кроссплатформенная разработка.">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="ru_RU">
+    
+    <title>AppCraft - Разработка мобильных приложений</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header" id="header">
+        <div class="container header__container">
+            <a href="#" class="logo" aria-label="AppCraft - На главную">
+                <svg class="logo__icon" width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="40" height="40" rx="8" fill="url(#logo-gradient)"/>
+                    <path d="M12 28L20 12L28 28H12Z" stroke="white" stroke-width="2" stroke-linejoin="round"/>
+                    <defs>
+                        <linearGradient id="logo-gradient" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#00D4FF"/>
+                            <stop offset="1" stop-color="#8B5CF6"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <span class="logo__text">AppCraft</span>
+            </a>
+            
+            <nav class="nav" id="nav">
+                <ul class="nav__list">
+                    <li class="nav__item">
+                        <a href="#services" class="nav__link">Услуги</a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="#portfolio" class="nav__link">Портфолио</a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="#about" class="nav__link">О нас</a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="#contact" class="nav__link">Контакты</a>
+                    </li>
+                </ul>
+            </nav>
+            
+            <a href="#contact" class="btn btn--primary header__cta">Обсудить проект</a>
+            
+            <button class="burger" id="burger" aria-label="Открыть меню" aria-expanded="false">
+                <span class="burger__line"></span>
+                <span class="burger__line"></span>
+                <span class="burger__line"></span>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero" id="hero">
+            <div class="hero__background">
+                <canvas id="hero-canvas" class="hero__canvas"></canvas>
+            </div>
+            <div class="container hero__container">
+                <div class="hero__content">
+                    <h1 class="hero__title">
+                        <span class="hero__title-line">Создаём мобильные приложения,</span>
+                        <span class="hero__title-line">которые меняют мир</span>
+                    </h1>
+                    <p class="hero__subtitle">
+                        iOS, Android, кроссплатформенная разработка. От идеи до запуска за 3 месяца.
+                    </p>
+                    <div class="hero__buttons">
+                        <a href="#contact" class="btn btn--primary btn--large">
+                            Обсудить проект
+                        </a>
+                        <a href="#portfolio" class="btn btn--outline btn--large">
+                            Смотреть кейсы
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="hero__scroll-indicator">
+                <span class="hero__scroll-text">Листайте вниз</span>
+                <svg class="hero__scroll-icon" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 5V19M12 19L6 13M12 19L18 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+        </section>
+
+        <!-- Services Section -->
+        <section class="services" id="services">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Наши услуги</h2>
+                    <p class="section-subtitle">Полный цикл разработки мобильных приложений</p>
+                </div>
+                
+                <div class="services__grid">
+                    <article class="service-card" data-service="ios">
+                        <div class="service-card__icon">
+                            <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+                                <path d="M36 16C36 12.5 34 10 34 10C34 10 30 12 30 16C30 20 34 22 34 22C34 22 36 19.5 36 16Z" stroke="currentColor" stroke-width="2"/>
+                                <path d="M28 8C28 8 24 10 24 16C24 22 28 24 28 24" stroke="currentColor" stroke-width="2"/>
+                                <rect x="8" y="14" width="20" height="28" rx="4" stroke="currentColor" stroke-width="2"/>
+                                <circle cx="18" cy="38" r="2" fill="currentColor"/>
+                            </svg>
+                        </div>
+                        <h3 class="service-card__title">iOS-приложения</h3>
+                        <p class="service-card__description">
+                            Нативные приложения для iPhone и iPad с Swift и SwiftUI. Оптимизация под все модели устройств Apple.
+                        </p>
+                        <a href="#contact" class="service-card__link">
+                            Подробнее
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </a>
+                    </article>
+                    
+                    <article class="service-card" data-service="android">
+                        <div class="service-card__icon">
+                            <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+                                <rect x="10" y="16" width="28" height="24" rx="4" stroke="currentColor" stroke-width="2"/>
+                                <path d="M16 8L20 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                <path d="M32 8L28 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                <circle cx="18" cy="26" r="3" fill="currentColor"/>
+                                <circle cx="30" cy="26" r="3" fill="currentColor"/>
+                                <path d="M10 28H4V24" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                <path d="M38 28H44V24" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                        </div>
+                        <h3 class="service-card__title">Android-приложения</h3>
+                        <p class="service-card__description">
+                            Приложения для всех Android-устройств на Kotlin. Поддержка различных версий ОС и форм-факторов.
+                        </p>
+                        <a href="#contact" class="service-card__link">
+                            Подробнее
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </a>
+                    </article>
+                    
+                    <article class="service-card" data-service="crossplatform">
+                        <div class="service-card__icon">
+                            <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+                                <rect x="6" y="12" width="16" height="28" rx="3" stroke="currentColor" stroke-width="2"/>
+                                <rect x="26" y="8" width="16" height="24" rx="3" stroke="currentColor" stroke-width="2"/>
+                                <circle cx="14" cy="36" r="2" fill="currentColor"/>
+                                <path d="M22 24H26" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                <path d="M24 22V26" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                        </div>
+                        <h3 class="service-card__title">Кроссплатформенная разработка</h3>
+                        <p class="service-card__description">
+                            Одно приложение для iOS и Android на Flutter или React Native. Экономия времени и бюджета.
+                        </p>
+                        <a href="#contact" class="service-card__link">
+                            Подробнее
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </a>
+                    </article>
+                    
+                    <article class="service-card" data-service="design">
+                        <div class="service-card__icon">
+                            <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+                                <circle cx="24" cy="24" r="16" stroke="currentColor" stroke-width="2"/>
+                                <circle cx="24" cy="24" r="8" stroke="currentColor" stroke-width="2"/>
+                                <path d="M24 8V4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                <path d="M24 44V40" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                <path d="M40 24H44" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                <path d="M4 24H8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                <circle cx="24" cy="24" r="3" fill="currentColor"/>
+                            </svg>
+                        </div>
+                        <h3 class="service-card__title">UI/UX Дизайн</h3>
+                        <p class="service-card__description">
+                            Проектирование интерфейсов, прототипирование, дизайн-системы. User-centered подход.
+                        </p>
+                        <a href="#contact" class="service-card__link">
+                            Подробнее
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </a>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- Advantages Section -->
+        <section class="advantages" id="about">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Почему выбирают нас</h2>
+                    <p class="section-subtitle">Цифры, которые говорят сами за себя</p>
+                </div>
+                
+                <div class="advantages__stats">
+                    <div class="stat-card">
+                        <span class="stat-card__number" id="projects-count" data-target="150">0</span>
+                        <span class="stat-card__suffix">+</span>
+                        <span class="stat-card__label">Проектов</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-card__number" id="clients-count" data-target="50">0</span>
+                        <span class="stat-card__suffix">+</span>
+                        <span class="stat-card__label">Клиентов</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-card__number" id="years-count" data-target="5">0</span>
+                        <span class="stat-card__suffix"></span>
+                        <span class="stat-card__label">Лет на рынке</span>
+                    </div>
+                </div>
+                
+                <div class="advantages__list">
+                    <div class="advantage-item">
+                        <div class="advantage-item__icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                <path d="M5 12L10 17L20 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <div class="advantage-item__content">
+                            <h3 class="advantage-item__title">Гарантия на код 12 месяцев</h3>
+                            <p class="advantage-item__description">Бесплатное исправление багов в течение года после запуска</p>
+                        </div>
+                    </div>
+                    <div class="advantage-item">
+                        <div class="advantage-item__icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                <path d="M5 12L10 17L20 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <div class="advantage-item__content">
+                            <h3 class="advantage-item__title">Прозрачное ценообразование</h3>
+                            <p class="advantage-item__description">Фиксированная стоимость без скрытых платежей</p>
+                        </div>
+                    </div>
+                    <div class="advantage-item">
+                        <div class="advantage-item__icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                <path d="M5 12L10 17L20 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <div class="advantage-item__content">
+                            <h3 class="advantage-item__title">Еженедельные отчёты о прогрессе</h3>
+                            <p class="advantage-item__description">Регулярные демо и отчёты о статусе проекта</p>
+                        </div>
+                    </div>
+                    <div class="advantage-item">
+                        <div class="advantage-item__icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                <path d="M5 12L10 17L20 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <div class="advantage-item__content">
+                            <h3 class="advantage-item__title">Команда senior-разработчиков</h3>
+                            <p class="advantage-item__description">Опытные специалисты с экспертизой в мобильной разработке</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Portfolio Section -->
+        <section class="portfolio" id="portfolio">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Наши кейсы</h2>
+                    <p class="section-subtitle">Проекты, которыми мы гордимся</p>
+                </div>
+                
+                <div class="portfolio__filters">
+                    <button class="filter-btn active" data-filter="all">Все</button>
+                    <button class="filter-btn" data-filter="ios">iOS</button>
+                    <button class="filter-btn" data-filter="android">Android</button>
+                    <button class="filter-btn" data-filter="crossplatform">Cross-platform</button>
+                </div>
+                
+                <div class="portfolio__grid">
+                    <article class="portfolio-card" data-category="ios">
+                        <div class="portfolio-card__image">
+                            <div class="portfolio-card__placeholder">
+                                <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+                                    <rect width="64" height="64" rx="12" fill="rgba(0, 212, 255, 0.1)"/>
+                                    <path d="M32 20V44M20 32H44" stroke="#00D4FF" stroke-width="2" stroke-linecap="round"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="portfolio-card__overlay">
+                            <span class="portfolio-card__category">iOS</span>
+                            <h3 class="portfolio-card__title">FinTech App</h3>
+                            <p class="portfolio-card__description">Мобильный банк с 500K+ пользователей</p>
+                            <a href="#" class="portfolio-card__link">Смотреть кейс</a>
+                        </div>
+                    </article>
+                    
+                    <article class="portfolio-card" data-category="android">
+                        <div class="portfolio-card__image">
+                            <div class="portfolio-card__placeholder">
+                                <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+                                    <rect width="64" height="64" rx="12" fill="rgba(139, 92, 246, 0.1)"/>
+                                    <path d="M32 20V44M20 32H44" stroke="#8B5CF6" stroke-width="2" stroke-linecap="round"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="portfolio-card__overlay">
+                            <span class="portfolio-card__category">Android</span>
+                            <h3 class="portfolio-card__title">E-Commerce Platform</h3>
+                            <p class="portfolio-card__description">Маркетплейс с AR-примеркой</p>
+                            <a href="#" class="portfolio-card__link">Смотреть кейс</a>
+                        </div>
+                    </article>
+                    
+                    <article class="portfolio-card" data-category="crossplatform">
+                        <div class="portfolio-card__image">
+                            <div class="portfolio-card__placeholder">
+                                <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+                                    <rect width="64" height="64" rx="12" fill="rgba(16, 185, 129, 0.1)"/>
+                                    <path d="M32 20V44M20 32H44" stroke="#10B981" stroke-width="2" stroke-linecap="round"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="portfolio-card__overlay">
+                            <span class="portfolio-card__category">Cross-platform</span>
+                            <h3 class="portfolio-card__title">Health & Fitness</h3>
+                            <p class="portfolio-card__description">Трекер здоровья с AI-рекомендациями</p>
+                            <a href="#" class="portfolio-card__link">Смотреть кейс</a>
+                        </div>
+                    </article>
+                    
+                    <article class="portfolio-card" data-category="ios">
+                        <div class="portfolio-card__image">
+                            <div class="portfolio-card__placeholder">
+                                <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+                                    <rect width="64" height="64" rx="12" fill="rgba(244, 114, 182, 0.1)"/>
+                                    <path d="M32 20V44M20 32H44" stroke="#F472B6" stroke-width="2" stroke-linecap="round"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="portfolio-card__overlay">
+                            <span class="portfolio-card__category">iOS</span>
+                            <h3 class="portfolio-card__title">Food Delivery</h3>
+                            <p class="portfolio-card__description">Агрегатор доставки с real-time трекингом</p>
+                            <a href="#" class="portfolio-card__link">Смотреть кейс</a>
+                        </div>
+                    </article>
+                    
+                    <article class="portfolio-card" data-category="android">
+                        <div class="portfolio-card__image">
+                            <div class="portfolio-card__placeholder">
+                                <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+                                    <rect width="64" height="64" rx="12" fill="rgba(0, 212, 255, 0.1)"/>
+                                    <path d="M32 20V44M20 32H44" stroke="#00D4FF" stroke-width="2" stroke-linecap="round"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="portfolio-card__overlay">
+                            <span class="portfolio-card__category">Android</span>
+                            <h3 class="portfolio-card__title">Social Network</h3>
+                            <p class="portfolio-card__description">Нишевая соцсеть для профессионалов</p>
+                            <a href="#" class="portfolio-card__link">Смотреть кейс</a>
+                        </div>
+                    </article>
+                    
+                    <article class="portfolio-card" data-category="crossplatform">
+                        <div class="portfolio-card__image">
+                            <div class="portfolio-card__placeholder">
+                                <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+                                    <rect width="64" height="64" rx="12" fill="rgba(139, 92, 246, 0.1)"/>
+                                    <path d="M32 20V44M20 32H44" stroke="#8B5CF6" stroke-width="2" stroke-linecap="round"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="portfolio-card__overlay">
+                            <span class="portfolio-card__category">Cross-platform</span>
+                            <h3 class="portfolio-card__title">EdTech Platform</h3>
+                            <p class="portfolio-card__description">Образовательная платформа с геймификацией</p>
+                            <a href="#" class="portfolio-card__link">Смотреть кейс</a>
+                        </div>
+                    </article>
+                </div>
+                
+                <div class="portfolio__cta">
+                    <a href="#" class="btn btn--outline">Смотреть все кейсы</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Process Section -->
+        <section class="process" id="process">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Как мы работаем</h2>
+                    <p class="section-subtitle">Прозрачный процесс от идеи до запуска</p>
+                </div>
+                
+                <div class="process__timeline">
+                    <div class="process__line"></div>
+                    
+                    <div class="process-step">
+                        <div class="process-step__number">01</div>
+                        <div class="process-step__icon">
+                            <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                                <path d="M16 4L4 12V28H28V12L16 4Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                                <path d="M12 28V18H20V28" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <h3 class="process-step__title">Анализ</h3>
+                        <p class="process-step__description">Сбор требований, исследование рынка, составление ТЗ</p>
+                        <span class="process-step__duration">1-2 недели</span>
+                    </div>
+                    
+                    <div class="process-step">
+                        <div class="process-step__number">02</div>
+                        <div class="process-step__icon">
+                            <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                                <rect x="4" y="8" width="24" height="18" rx="2" stroke="currentColor" stroke-width="2"/>
+                                <path d="M4 14H28" stroke="currentColor" stroke-width="2"/>
+                                <circle cx="8" cy="11" r="1" fill="currentColor"/>
+                                <circle cx="12" cy="11" r="1" fill="currentColor"/>
+                                <circle cx="16" cy="11" r="1" fill="currentColor"/>
+                            </svg>
+                        </div>
+                        <h3 class="process-step__title">Прототип</h3>
+                        <p class="process-step__description">Прототипирование, UI/UX дизайн, дизайн-система</p>
+                        <span class="process-step__duration">2-3 недели</span>
+                    </div>
+                    
+                    <div class="process-step">
+                        <div class="process-step__number">03</div>
+                        <div class="process-step__icon">
+                            <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                                <path d="M12 4L4 12V28H12V20H20V28H28V12L20 4H12Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                                <path d="M16 4V12H20" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <h3 class="process-step__title">Разработка</h3>
+                        <p class="process-step__description">Frontend, Backend, интеграции, API</p>
+                        <span class="process-step__duration">6-8 недель</span>
+                    </div>
+                    
+                    <div class="process-step">
+                        <div class="process-step__number">04</div>
+                        <div class="process-step__icon">
+                            <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                                <circle cx="16" cy="16" r="12" stroke="currentColor" stroke-width="2"/>
+                                <path d="M16 10V16L20 20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <h3 class="process-step__title">Тестирование</h3>
+                        <p class="process-step__description">QA, баг-фиксинг, оптимизация производительности</p>
+                        <span class="process-step__duration">1-2 недели</span>
+                    </div>
+                    
+                    <div class="process-step">
+                        <div class="process-step__number">05</div>
+                        <div class="process-step__icon">
+                            <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                                <path d="M16 4L20 12L28 13L22 19L24 28L16 23L8 28L10 19L4 13L12 12L16 4Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <h3 class="process-step__title">Запуск</h3>
+                        <p class="process-step__description">Деплой в сторы, мониторинг, поддержка</p>
+                        <span class="process-step__duration">Постоянно</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonials Section -->
+        <section class="testimonials" id="testimonials">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Отзывы клиентов</h2>
+                    <p class="section-subtitle">Что говорят о нас наши партнёры</p>
+                </div>
+                
+                <div class="testimonials__carousel">
+                    <button class="testimonials__nav testimonials__nav--prev" aria-label="Предыдущий отзыв">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                    
+                    <div class="testimonials__slider">
+                        <div class="testimonials__track">
+                            <article class="testimonial-card">
+                                <div class="testimonial-card__rating">
+                                    <svg class="star" width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                                        <path d="M10 1L12.39 6.36L18 7.27L14 11.14L14.95 17L10 14.27L5.05 17L6 11.14L2 7.27L7.61 6.36L10 1Z"/>
+                                    </svg>
+                                    <svg class="star" width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                                        <path d="M10 1L12.39 6.36L18 7.27L14 11.14L14.95 17L10 14.27L5.05 17L6 11.14L2 7.27L7.61 6.36L10 1Z"/>
+                                    </svg>
+                                    <svg class="star" width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                                        <path d="M10 1L12.39 6.36L18 7.27L14 11.14L14.95 17L10 14.27L5.05 17L6 11.14L2 7.27L7.61 6.36L10 1Z"/>
+                                    </svg>
+                                    <svg class="star" width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                                        <path d="M10 1L12.39 6.36L18 7.27L14 11.14L14.95 17L10 14.27L5.05 17L6 11.14L2 7.27L7.61 6.36L10 1Z"/>
+                                    </svg>
+                                    <svg class="star" width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                                        <path d="M10 1L12.39 6.36L18 7.27L14 11.14L14.95 17L10 14.27L5.05 17L6 11.14L2 7.27L7.61 6.36L10 1Z"/>
+                                    </svg>
+                                </div>
+                                <blockquote class="testimonial-card__text">
+                                    "Отличная команда! Приложение превзошло все ожидания. Профессиональный подход к разработке и постоянная коммуникация на всех этапах проекта."
+                                </blockquote>
+                                <div class="testimonial-card__author">
+                                    <div class="testimonial-card__avatar">
+                                        <span>ИП</span>
+                                    </div>
+                                    <div class="testimonial-card__info">
+                                        <cite class="testimonial-card__name">Иван Петров</cite>
+                                        <span class="testimonial-card__position">CEO, TechStartup</span>
+                                    </div>
+                                </div>
+                            </article>
+                            
+                            <article class="testimonial-card">
+                                <div class="testimonial-card__rating">
+                                    <svg class="star" width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                                        <path d="M10 1L12.39 6.36L18 7.27L14 11.14L14.95 17L10 14.27L5.05 17L6 11.14L2 7.27L7.61 6.36L10 1Z"/>
+                                    </svg>
+                                    <svg class="star" width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                                        <path d="M10 1L12.39 6.36L18 7.27L14 11.14L14.95 17L10 14.27L5.05 17L6 11.14L2 7.27L7.61 6.36L10 1Z"/>
+                                    </svg>
+                                    <svg class="star" width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                                        <path d="M10 1L12.39 6.36L18 7.27L14 11.14L14.95 17L10 14.27L5.05 17L6 11.14L2 7.27L7.61 6.36L10 1Z"/>
+                                    </svg>
+                                    <svg class="star" width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                                        <path d="M10 1L12.39 6.36L18 7.27L14 11.14L14.95 17L10 14.27L5.05 17L6 11.14L2 7.27L7.61 6.36L10 1Z"/>
+                                    </svg>
+                                    <svg class="star" width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                                        <path d="M10 1L12.39 6.36L18 7.27L14 11.14L14.95 17L10 14.27L5.05 17L6 11.14L2 7.27L7.61 6.36L10 1Z"/>
+                                    </svg>
+                                </div>
+                                <blockquote class="testimonial-card__text">
+                                    "Запустили приложение в срок и в рамках бюджета. Качество кода на высшем уровне. Рекомендую всем, кто ищет надёжного партнёра для разработки."
+                                </blockquote>
+                                <div class="testimonial-card__author">
+                                    <div class="testimonial-card__avatar">
+                                        <span>АС</span>
+                                    </div>
+                                    <div class="testimonial-card__info">
+                                        <cite class="testimonial-card__name">Анна Сидорова</cite>
+                                        <span class="testimonial-card__position">Product Manager, FinApp</span>
+                                    </div>
+                                </div>
+                            </article>
+                            
+                            <article class="testimonial-card">
+                                <div class="testimonial-card__rating">
+                                    <svg class="star" width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                                        <path d="M10 1L12.39 6.36L18 7.27L14 11.14L14.95 17L10 14.27L5.05 17L6 11.14L2 7.27L7.61 6.36L10 1Z"/>
+                                    </svg>
+                                    <svg class="star" width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                                        <path d="M10 1L12.39 6.36L18 7.27L14 11.14L14.95 17L10 14.27L5.05 17L6 11.14L2 7.27L7.61 6.36L10 1Z"/>
+                                    </svg>
+                                    <svg class="star" width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                                        <path d="M10 1L12.39 6.36L18 7.27L14 11.14L14.95 17L10 14.27L5.05 17L6 11.14L2 7.27L7.61 6.36L10 1Z"/>
+                                    </svg>
+                                    <svg class="star" width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                                        <path d="M10 1L12.39 6.36L18 7.27L14 11.14L14.95 17L10 14.27L5.05 17L6 11.14L2 7.27L7.61 6.36L10 1Z"/>
+                                    </svg>
+                                    <svg class="star" width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                                        <path d="M10 1L12.39 6.36L18 7.27L14 11.14L14.95 17L10 14.27L5.05 17L6 11.14L2 7.27L7.61 6.36L10 1Z"/>
+                                    </svg>
+                                </div>
+                                <blockquote class="testimonial-card__text">
+                                    "Второй проект с AppCraft. Команда понимает бизнес-задачи и предлагает оптимальные технические решения. Планируем продолжить сотрудничество."
+                                </blockquote>
+                                <div class="testimonial-card__author">
+                                    <div class="testimonial-card__avatar">
+                                        <span>ДК</span>
+                                    </div>
+                                    <div class="testimonial-card__info">
+                                        <cite class="testimonial-card__name">Дмитрий Козлов</cite>
+                                        <span class="testimonial-card__position">CTO, E-Commerce Solutions</span>
+                                    </div>
+                                </div>
+                            </article>
+                        </div>
+                    </div>
+                    
+                    <button class="testimonials__nav testimonials__nav--next" aria-label="Следующий отзыв">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                </div>
+                
+                <div class="testimonials__dots">
+                    <button class="testimonials__dot active" aria-label="Отзыв 1"></button>
+                    <button class="testimonials__dot" aria-label="Отзыв 2"></button>
+                    <button class="testimonials__dot" aria-label="Отзыв 3"></button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section class="contact" id="contact">
+            <div class="container">
+                <div class="contact__wrapper">
+                    <div class="contact__info">
+                        <h2 class="section-title">Готовы начать проект?</h2>
+                        <p class="contact__description">
+                            Обсудите вашу идею с нашими экспертами. Получите бесплатную консультацию и оценку проекта.
+                        </p>
+                        <div class="contact__details">
+                            <div class="contact__item">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                    <path d="M4 4H20C21.1 4 22 4.9 22 6V18C22 19.1 21.1 20 20 20H4C2.9 20 2 19.1 2 18V6C2 4.9 2.9 4 4 4Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M22 6L12 13L2 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                <a href="mailto:hello@appcraft.dev">hello@appcraft.dev</a>
+                            </div>
+                            <div class="contact__item">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                    <path d="M22 16.92V19.92C22 20.48 21.56 20.93 21 20.97C20.62 21 20.24 21 19.86 20.96C10.71 20.03 3.47 12.79 2.54 3.64C2.5 3.26 2.5 2.88 2.53 2.5C2.57 1.94 3.02 1.5 3.58 1.5H6.58C7.08 1.5 7.5 1.88 7.58 2.37C7.72 3.33 7.98 4.25 8.35 5.12C8.51 5.49 8.41 5.92 8.11 6.19L6.82 7.48C8.16 10.04 10.24 12.12 12.8 13.46L14.09 12.17C14.36 11.87 14.79 11.77 15.16 11.93C16.03 12.3 16.95 12.56 17.91 12.7C18.41 12.78 18.79 13.21 18.79 13.71V16.92H22Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                <a href="tel:+74951234567">+7 (495) 123-45-67</a>
+                            </div>
+                            <div class="contact__item">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                    <path d="M21 10C21 17 12 23 12 23C12 23 3 17 3 10C3 7.61305 3.94821 5.32387 5.63604 3.63604C7.32387 1.94821 9.61305 1 12 1C14.3869 1 16.6761 1.94821 18.364 3.63604C20.0518 5.32387 21 7.61305 21 10Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                                <span>Москва, ул. Технологическая, 42</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <form class="contact__form" id="contact-form">
+                        <div class="form-group">
+                            <label for="name" class="form-label">Имя</label>
+                            <input type="text" id="name" name="name" class="form-input" placeholder="Ваше имя" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" id="email" name="email" class="form-input" placeholder="email@example.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone" class="form-label">Телефон</label>
+                            <input type="tel" id="phone" name="phone" class="form-input" placeholder="+7 (___) ___-__-__">
+                        </div>
+                        <div class="form-group">
+                            <label for="message" class="form-label">Сообщение</label>
+                            <textarea id="message" name="message" class="form-input form-textarea" placeholder="Расскажите о вашем проекте..." rows="4" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn--primary btn--large btn--full">
+                            Отправить заявку
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer__grid">
+                <div class="footer__brand">
+                    <a href="#" class="logo logo--footer">
+                        <svg class="logo__icon" width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="40" height="40" rx="8" fill="url(#logo-gradient-footer)"/>
+                            <path d="M12 28L20 12L28 28H12Z" stroke="white" stroke-width="2" stroke-linejoin="round"/>
+                            <defs>
+                                <linearGradient id="logo-gradient-footer" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+                                    <stop stop-color="#00D4FF"/>
+                                    <stop offset="1" stop-color="#8B5CF6"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                        <span class="logo__text">AppCraft</span>
+                    </a>
+                    <p class="footer__tagline">Создаём мобильные приложения, которые меняют бизнес</p>
+                </div>
+                
+                <nav class="footer__nav">
+                    <div class="footer__column">
+                        <h4 class="footer__title">Услуги</h4>
+                        <ul class="footer__list">
+                            <li><a href="#services">iOS разработка</a></li>
+                            <li><a href="#services">Android разработка</a></li>
+                            <li><a href="#services">Flutter</a></li>
+                            <li><a href="#services">UI/UX Дизайн</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer__column">
+                        <h4 class="footer__title">Компания</h4>
+                        <ul class="footer__list">
+                            <li><a href="#about">О нас</a></li>
+                            <li><a href="#">Команда</a></li>
+                            <li><a href="#">Карьера</a></li>
+                            <li><a href="#">Блог</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer__column">
+                        <h4 class="footer__title">Контакты</h4>
+                        <ul class="footer__list">
+                            <li><a href="mailto:hello@appcraft.dev">hello@appcraft.dev</a></li>
+                            <li><a href="tel:+74951234567">+7 (495) 123-45-67</a></li>
+                            <li><span>Москва, ул. Технологическая, 42</span></li>
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+            
+            <div class="footer__bottom">
+                <div class="footer__social">
+                    <a href="#" class="social-link" aria-label="LinkedIn">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path d="M16 8C17.5913 8 19.1174 8.63214 20.2426 9.75736C21.3679 10.8826 22 12.4087 22 14V21H18V14C18 13.4696 17.7893 12.9609 17.4142 12.5858C17.0391 12.2107 16.5304 12 16 12C15.4696 12 14.9609 12.2107 14.5858 12.5858C14.2107 12.9609 14 13.4696 14 14V21H10V14C10 12.4087 10.6321 10.8826 11.7574 9.75736C12.8826 8.63214 14.4087 8 16 8Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <rect x="2" y="9" width="4" height="12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <circle cx="4" cy="4" r="2" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                    </a>
+                    <a href="#" class="social-link" aria-label="GitHub">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path d="M9 19C4 20.5 4 16.5 2 16M16 22V18.13C16.0375 17.6532 15.9731 17.1738 15.811 16.7237C15.6489 16.2737 15.3929 15.8634 15.06 15.52C18.2 15.17 21.5 13.98 21.5 8.52C21.4997 7.12383 20.9627 5.7812 20 4.77C20.4559 3.54851 20.4236 2.19835 19.91 0.999999C19.91 0.999999 18.73 0.649999 16 2.48C13.708 1.85882 11.292 1.85882 9 2.48C6.27 0.649999 5.09 0.999999 5.09 0.999999C4.57638 2.19835 4.54414 3.54851 5 4.77C4.03013 5.7887 3.49252 7.14346 3.5 8.55C3.5 13.97 6.8 15.16 9.94 15.55C9.611 15.89 9.35726 16.2954 9.19531 16.7399C9.03335 17.1844 8.96681 17.6581 9 18.13V22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </a>
+                    <a href="#" class="social-link" aria-label="Dribbble">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                            <path d="M19.13 5.09C15.22 9.14 10 10.44 2.25 10.94" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M21.75 12.84C16.46 11.72 12.38 13.14 8.25 17.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M8.56 2.75C12.93 8.75 14.56 14.5 15.06 21.25" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </a>
+                    <a href="#" class="social-link" aria-label="Behance">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path d="M1 7H8C9.06087 7 10.0783 7.42143 10.8284 8.17157C11.5786 8.92172 12 9.93913 12 11C12 12.0609 11.5786 13.0783 10.8284 13.8284C10.0783 14.5786 9.06087 15 8 15H1V7Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M1 15H9C10.0609 15 11.0783 15.4214 11.8284 16.1716C12.5786 16.9217 13 17.9391 13 19C13 20.0609 12.5786 21.0783 11.8284 21.8284C11.0783 22.5786 10.0609 23 9 23H1V15Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M15 13H23C22.9346 11.9456 22.4688 10.9559 21.6977 10.2318C20.9266 9.50772 19.909 9.10417 18.8525 9.10417C17.796 9.10417 16.7784 9.50772 16.0073 10.2318C15.2362 10.9559 14.7704 11.9456 14.705 13H15ZM15 13C14.9986 14.0725 15.3816 15.1105 16.0798 15.9279C16.778 16.7454 17.7449 17.2881 18.804 17.458C19.8631 17.6279 20.9461 17.4138 21.861 16.854" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M17 4H22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </a>
+                </div>
+                <div class="footer__copyright">
+                    <p>© 2024 AppCraft. Все права защищены.</p>
+                    <a href="#" class="footer__link">Политика конфиденциальности</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <!-- Three.js -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+    
+    <!-- GSAP -->
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.0/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.0/dist/ScrollToPlugin.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.0/dist/ScrollTrigger.min.js"></script>
+    
+    <!-- Lenis Smooth Scroll -->
+    <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.0/dist/lenis.min.js"></script>
+    
+    <!-- CountUp.js -->
+    <script src="https://cdn.jsdelivr.net/npm/countup.js@2.8.0/dist/countUp.umd.min.js"></script>
+    
+    <!-- Main JS -->
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>
