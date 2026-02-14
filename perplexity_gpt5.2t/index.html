@@ -1,0 +1,414 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NovaMobile — разработка мобильных приложений</title>
+  <meta name="description" content="Создаём мобильные приложения iOS/Android под ключ: аналитика, дизайн, разработка, релизы, поддержка." />
+
+  <!-- Fonts (Inter) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap">
+
+  <!-- AOS (Animate On Scroll) -->
+  <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+
+<body>
+  <!-- 3D background canvas -->
+  <canvas id="bg3d" aria-hidden="true"></canvas>
+  <div class="bg-glow" aria-hidden="true"></div>
+
+  <header class="header" id="top">
+    <div class="container header__inner">
+      <a class="logo" href="#top" aria-label="На главную">
+        <span class="logo__mark">NM</span>
+        <span class="logo__text">NovaMobile</span>
+      </a>
+
+      <nav class="nav" id="nav">
+        <a class="nav__link" href="#services">Услуги</a>
+        <a class="nav__link" href="#process">Процесс</a>
+        <a class="nav__link" href="#work">Кейсы</a>
+        <a class="nav__link" href="#stack">Стек</a>
+        <a class="nav__link" href="#faq">FAQ</a>
+      </nav>
+
+      <div class="header__actions">
+        <a class="btn btn--ghost" href="#contact">Обсудить проект</a>
+        <button class="burger" id="burger" type="button" aria-label="Открыть меню" aria-expanded="false" aria-controls="nav">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container hero__grid">
+        <div class="hero__content">
+          <div class="pill" data-aos="fade-up" data-aos-delay="0">
+            Mobile • iOS/Android • MVP • Product
+          </div>
+
+          <h1 class="hero__title">
+            Разрабатываем мобильные приложения, которые приносят результат
+          </h1>
+
+          <p class="hero__subtitle" data-aos="fade-up" data-aos-delay="100">
+            От идеи и прототипа до релиза в App Store и Google Play: аналитика, дизайн, разработка, CI/CD и поддержка.
+          </p>
+
+          <div class="hero__cta" data-aos="fade-up" data-aos-delay="200">
+            <a class="btn btn--primary" href="#contact">Получить оценку</a>
+            <a class="btn btn--glass" href="#work">Посмотреть кейсы</a>
+          </div>
+
+          <div class="stats" data-aos="fade-up" data-aos-delay="300">
+            <div class="stat">
+              <div class="stat__value">6–10</div>
+              <div class="stat__label">недель до MVP</div>
+            </div>
+            <div class="stat">
+              <div class="stat__value">24/7</div>
+              <div class="stat__label">мониторинг релизов</div>
+            </div>
+            <div class="stat">
+              <div class="stat__value">+QA</div>
+              <div class="stat__label">автотесты и ручное тестирование</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero__card" data-aos="zoom-in" data-aos-delay="200">
+          <div class="card">
+            <div class="card__top">
+              <div class="card__chip"></div>
+              <div class="card__title">Project Dashboard</div>
+            </div>
+
+            <div class="card__body">
+              <div class="meter">
+                <div class="meter__label">Velocity</div>
+                <div class="meter__bar"><span style="width: 76%"></span></div>
+              </div>
+
+              <div class="meter">
+                <div class="meter__label">Quality Gate</div>
+                <div class="meter__bar meter__bar--ok"><span style="width: 92%"></span></div>
+              </div>
+
+              <div class="mini-grid">
+                <div class="mini">
+                  <div class="mini__k">Sprint</div>
+                  <div class="mini__v">#14</div>
+                </div>
+                <div class="mini">
+                  <div class="mini__k">Build</div>
+                  <div class="mini__v">green</div>
+                </div>
+                <div class="mini">
+                  <div class="mini__k">Release</div>
+                  <div class="mini__v">ready</div>
+                </div>
+              </div>
+
+              <div class="card__note">
+                Прозрачный процесс: планирование, демо, отчёты, контроль качества.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero__fade" aria-hidden="true"></div>
+    </section>
+
+    <section class="section" id="services">
+      <div class="container">
+        <div class="section__head">
+          <h2 class="section__title" data-aos="fade-up">Услуги</h2>
+          <p class="section__desc" data-aos="fade-up" data-aos-delay="100">
+            Делаем продукт целиком или усиливаем вашу команду точечно.
+          </p>
+        </div>
+
+        <div class="cards">
+          <article class="svc" data-aos="fade-up" data-aos-delay="0">
+            <h3 class="svc__title">MVP под ключ</h3>
+            <p class="svc__text">Быстро проверяем гипотезы: UX, прототип, разработка, релиз.</p>
+            <ul class="svc__list">
+              <li>План релизов и приоритизация</li>
+              <li>Трекер задач + демо</li>
+              <li>Метрики и аналитика</li>
+            </ul>
+          </article>
+
+          <article class="svc" data-aos="fade-up" data-aos-delay="80">
+            <h3 class="svc__title">iOS / Android</h3>
+            <p class="svc__text">Нативно или кроссплатформа — выбираем оптимально под цели.</p>
+            <ul class="svc__list">
+              <li>Пуши, карты, платежи</li>
+              <li>Оффлайн‑режим</li>
+              <li>Оптимизация производительности</li>
+            </ul>
+          </article>
+
+          <article class="svc" data-aos="fade-up" data-aos-delay="160">
+            <h3 class="svc__title">Дизайн и продукт</h3>
+            <p class="svc__text">Современный UI, понятный UX и дизайн‑система под масштабирование.</p>
+            <ul class="svc__list">
+              <li>Прототипирование</li>
+              <li>Дизайн‑система</li>
+              <li>Гайдлайны iOS/Material</li>
+            </ul>
+          </article>
+
+          <article class="svc" data-aos="fade-up" data-aos-delay="240">
+            <h3 class="svc__title">Поддержка и развитие</h3>
+            <p class="svc__text">После релиза: стабильность, новые фичи, A/B‑тесты, рост.</p>
+            <ul class="svc__list">
+              <li>SLA и мониторинг</li>
+              <li>Crash‑аналитика</li>
+              <li>План улучшений</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--alt" id="process">
+      <div class="container">
+        <div class="section__head">
+          <h2 class="section__title" data-aos="fade-up">Как мы работаем</h2>
+          <p class="section__desc" data-aos="fade-up" data-aos-delay="100">
+            Прозрачный процесс: вы видите прогресс каждую неделю.
+          </p>
+        </div>
+
+        <div class="steps">
+          <div class="step" data-aos="fade-up" data-aos-delay="0">
+            <div class="step__n">01</div>
+            <div class="step__t">Discovery</div>
+            <div class="step__d">Цели, аудитория, конкуренты, требования, риски.</div>
+          </div>
+          <div class="step" data-aos="fade-up" data-aos-delay="80">
+            <div class="step__n">02</div>
+            <div class="step__t">UX/UI</div>
+            <div class="step__d">Прототип, дизайн, дизайн‑система, кликабельный сценарий.</div>
+          </div>
+          <div class="step" data-aos="fade-up" data-aos-delay="160">
+            <div class="step__n">03</div>
+            <div class="step__t">Dev + QA</div>
+            <div class="step__d">Спринты, код‑ревью, тестирование, сборки по расписанию.</div>
+          </div>
+          <div class="step" data-aos="fade-up" data-aos-delay="240">
+            <div class="step__n">04</div>
+            <div class="step__t">Release</div>
+            <div class="step__d">Подготовка стора, публикация, аналитика, поддержка релиза.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="work">
+      <div class="container">
+        <div class="section__head">
+          <h2 class="section__title" data-aos="fade-up">Кейсы</h2>
+          <p class="section__desc" data-aos="fade-up" data-aos-delay="100">
+            Примеры формата работ (контент-заглушки — легко заменить на ваши реальные кейсы).
+          </p>
+        </div>
+
+        <div class="work">
+          <article class="work__item" data-aos="fade-up" data-aos-delay="0">
+            <div class="work__badge">FinTech</div>
+            <h3 class="work__title">Кошелёк с P2P‑переводами</h3>
+            <p class="work__text">MVP за 8 недель: онбординг, KYC‑флоу, пуши, аналитика.</p>
+            <div class="work__meta">
+              <span>iOS • Android</span>
+              <span>•</span>
+              <span>React Native</span>
+            </div>
+          </article>
+
+          <article class="work__item" data-aos="fade-up" data-aos-delay="80">
+            <div class="work__badge">Health</div>
+            <h3 class="work__title">Трекер привычек и сна</h3>
+            <p class="work__text">Фокус на UX и удержание: напоминания, календарь, виджеты.</p>
+            <div class="work__meta">
+              <span>iOS</span>
+              <span>•</span>
+              <span>Swift</span>
+            </div>
+          </article>
+
+          <article class="work__item" data-aos="fade-up" data-aos-delay="160">
+            <div class="work__badge">Retail</div>
+            <h3 class="work__title">Приложение лояльности</h3>
+            <p class="work__text">QR‑карта, оффлайн‑режим, пуш‑кампании, интеграции с CRM.</p>
+            <div class="work__meta">
+              <span>Android</span>
+              <span>•</span>
+              <span>Kotlin</span>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--alt" id="stack">
+      <div class="container">
+        <div class="section__head">
+          <h2 class="section__title" data-aos="fade-up">Технологии</h2>
+          <p class="section__desc" data-aos="fade-up" data-aos-delay="100">
+            Подбираем стек под сроки, бюджет и планы роста.
+          </p>
+        </div>
+
+        <div class="badges" data-aos="fade-up" data-aos-delay="120">
+          <span class="badge">Swift</span>
+          <span class="badge">Kotlin</span>
+          <span class="badge">React Native</span>
+          <span class="badge">Flutter</span>
+          <span class="badge">Node.js</span>
+          <span class="badge">REST/GraphQL</span>
+          <span class="badge">Firebase</span>
+          <span class="badge">CI/CD</span>
+          <span class="badge">Crashlytics</span>
+        </div>
+
+        <div class="quote" data-aos="fade-up" data-aos-delay="200">
+          <div class="quote__text">
+            «Мы строим не “просто приложение”, а продукт с измеримыми метриками и понятной архитектурой».
+          </div>
+          <div class="quote__by">— команда NovaMobile</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="faq">
+      <div class="container">
+        <div class="section__head">
+          <h2 class="section__title" data-aos="fade-up">FAQ</h2>
+          <p class="section__desc" data-aos="fade-up" data-aos-delay="100">
+            Частые вопросы про сроки, стоимость и формат работы.
+          </p>
+        </div>
+
+        <div class="faq" data-aos="fade-up" data-aos-delay="120">
+          <button class="faq__item" type="button" aria-expanded="false">
+            <span class="faq__q">Сколько стоит разработка?</span>
+            <span class="faq__icon" aria-hidden="true"></span>
+            <span class="faq__a">
+              Зависит от объёма и интеграций. Обычно делаем оценку за 1–2 дня после короткого созвона и брифа.
+            </span>
+          </button>
+
+          <button class="faq__item" type="button" aria-expanded="false">
+            <span class="faq__q">Можно начать с MVP?</span>
+            <span class="faq__icon" aria-hidden="true"></span>
+            <span class="faq__a">
+              Да: выделяем ключевые сценарии, упрощаем всё второстепенное и планируем развитие после релиза.
+            </span>
+          </button>
+
+          <button class="faq__item" type="button" aria-expanded="false">
+            <span class="faq__q">Вы поможете с публикацией в сторах?</span>
+            <span class="faq__icon" aria-hidden="true"></span>
+            <span class="faq__a">
+              Да: подготовка ассетов, сборок, описаний, compliance, помощь с аккаунтами и релиз‑процессом.
+            </span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--cta" id="contact">
+      <div class="container">
+        <div class="cta" data-aos="zoom-in" data-aos-delay="0">
+          <div class="cta__content">
+            <h2 class="cta__title">Обсудим ваш продукт?</h2>
+            <p class="cta__desc">
+              Оставьте контакты — пришлём вопросы для оценки и предложим план работ на 2–3 варианта бюджета.
+            </p>
+
+            <form class="form" id="contactForm" novalidate>
+              <div class="form__row">
+                <label class="field">
+                  <span class="field__label">Имя</span>
+                  <input class="field__input" type="text" name="name" placeholder="Алексей" autocomplete="name" required />
+                </label>
+
+                <label class="field">
+                  <span class="field__label">Email</span>
+                  <input class="field__input" type="email" name="email" placeholder="alex@company.com" autocomplete="email" required />
+                </label>
+              </div>
+
+              <label class="field">
+                <span class="field__label">Коротко о проекте</span>
+                <textarea class="field__input field__input--area" name="message" rows="4" placeholder="Что нужно сделать, сроки, платформа, ссылки на референсы" required></textarea>
+              </label>
+
+              <div class="form__actions">
+                <button class="btn btn--primary" type="submit">Отправить</button>
+                <div class="form__hint">Нажимая «Отправить», вы соглашаетесь на обработку данных для связи.</div>
+              </div>
+
+              <div class="toast" id="toast" role="status" aria-live="polite"></div>
+            </form>
+          </div>
+
+          <div class="cta__aside">
+            <div class="asideCard">
+              <div class="asideCard__title">Что вы получите</div>
+              <ul class="asideCard__list">
+                <li>Оценку сроков и стоимости</li>
+                <li>Карту функционала MVP</li>
+                <li>Риски и варианты оптимизации</li>
+                <li>План релизов</li>
+              </ul>
+
+              <div class="asideCard__contact">
+                <div class="asideCard__k">Ответим в течение</div>
+                <div class="asideCard__v">1 рабочего дня</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <footer class="footer">
+          <div class="footer__inner">
+            <div class="footer__brand">
+              <div class="logo logo--small">
+                <span class="logo__mark">NM</span>
+                <span class="logo__text">NovaMobile</span>
+              </div>
+              <div class="footer__copy">© <span id="year"></span> NovaMobile. Разработка мобильных приложений.</div>
+            </div>
+
+            <div class="footer__links">
+              <a href="#services">Услуги</a>
+              <a href="#work">Кейсы</a>
+              <a href="#contact">Контакты</a>
+            </div>
+          </div>
+        </footer>
+      </div>
+    </section>
+  </main>
+
+  <!-- GSAP -->
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13/dist/gsap.min.js"></script>
+
+  <!-- AOS -->
+  <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+
+  <!-- App -->
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
