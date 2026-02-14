@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AppCraft - Разработка мобильных приложений</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- 3D Background Canvas -->
+    <canvas id="bg-canvas"></canvas>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">AppCraft<span class="dot">.</span></div>
+            <ul class="nav-menu">
+                <li><a href="#home">Главная</a></li>
+                <li><a href="#services">Услуги</a></li>
+                <li><a href="#portfolio">Портфолио</a></li>
+                <li><a href="#process">Процесс</a></li>
+                <li><a href="#contact">Контакты</a></li>
+            </ul>
+            <button class="contact-btn">Связаться</button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title fade-in">
+                    Создаём мобильные приложения<br>
+                    <span class="gradient-text">будущего</span>
+                </h1>
+                <p class="hero-subtitle fade-in delay-1">
+                    Разрабатываем iOS и Android приложения, которые меняют индустрии
+                </p>
+                <div class="hero-buttons fade-in delay-2">
+                    <button class="btn btn-primary">Начать проект</button>
+                    <button class="btn btn-secondary">Смотреть работы</button>
+                </div>
+                <div class="hero-stats fade-in delay-3">
+                    <div class="stat-item">
+                        <div class="stat-number">150+</div>
+                        <div class="stat-label">Проектов</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">98%</div>
+                        <div class="stat-label">Довольных клиентов</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">5+</div>
+                        <div class="stat-label">Лет опыта</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="services">
+        <div class="container">
+            <h2 class="section-title">Наши услуги</h2>
+            <p class="section-subtitle">Полный цикл разработки мобильных приложений</p>
+
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">📱</div>
+                    <h3>iOS разработка</h3>
+                    <p>Нативные приложения для iPhone и iPad с использованием Swift и SwiftUI</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">🤖</div>
+                    <h3>Android разработка</h3>
+                    <p>Современные приложения на Kotlin с Material Design</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">🔄</div>
+                    <h3>Cross-platform</h3>
+                    <p>Кроссплатформенные решения на React Native и Flutter</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">🎨</div>
+                    <h3>UI/UX дизайн</h3>
+                    <p>Интуитивные интерфейсы, которые любят пользователи</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">⚙️</div>
+                    <h3>Backend разработка</h3>
+                    <p>Надёжная серверная часть и API для вашего приложения</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">🚀</div>
+                    <h3>Поддержка и развитие</h3>
+                    <p>Постоянная техподдержка и обновления приложений</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portfolio Section -->
+    <section id="portfolio" class="portfolio">
+        <div class="container">
+            <h2 class="section-title">Портфолио</h2>
+            <p class="section-subtitle">Проекты, которыми мы гордимся</p>
+
+            <div class="portfolio-grid">
+                <div class="portfolio-item">
+                    <div class="portfolio-image">
+                        <div class="portfolio-placeholder" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                            FinApp
+                        </div>
+                    </div>
+                    <div class="portfolio-info">
+                        <h3>FinanceApp</h3>
+                        <p>Финтех приложение для управления личными финансами</p>
+                        <div class="portfolio-tags">
+                            <span>iOS</span>
+                            <span>Android</span>
+                            <span>FinTech</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="portfolio-item">
+                    <div class="portfolio-image">
+                        <div class="portfolio-placeholder" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                            HealthTracker
+                        </div>
+                    </div>
+                    <div class="portfolio-info">
+                        <h3>HealthTracker</h3>
+                        <p>Приложение для мониторинга здоровья и фитнеса</p>
+                        <div class="portfolio-tags">
+                            <span>React Native</span>
+                            <span>Health</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="portfolio-item">
+                    <div class="portfolio-image">
+                        <div class="portfolio-placeholder" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                            ShopMaster
+                        </div>
+                    </div>
+                    <div class="portfolio-info">
+                        <h3>ShopMaster</h3>
+                        <p>E-commerce платформа с AR примеркой товаров</p>
+                        <div class="portfolio-tags">
+                            <span>Flutter</span>
+                            <span>AR</span>
+                            <span>E-commerce</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Process Section -->
+    <section id="process" class="process">
+        <div class="container">
+            <h2 class="section-title">Процесс разработки</h2>
+            <p class="section-subtitle">Как мы создаём ваш продукт</p>
+
+            <div class="process-timeline">
+                <div class="process-step">
+                    <div class="step-number">01</div>
+                    <div class="step-content">
+                        <h3>Исследование</h3>
+                        <p>Анализируем вашу идею, целевую аудиторию и рынок</p>
+                    </div>
+                </div>
+                <div class="process-step">
+                    <div class="step-number">02</div>
+                    <div class="step-content">
+                        <h3>Дизайн</h3>
+                        <p>Создаём прототипы и финальный UI/UX дизайн</p>
+                    </div>
+                </div>
+                <div class="process-step">
+                    <div class="step-number">03</div>
+                    <div class="step-content">
+                        <h3>Разработка</h3>
+                        <p>Программируем приложение с использованием лучших практик</p>
+                    </div>
+                </div>
+                <div class="process-step">
+                    <div class="step-number">04</div>
+                    <div class="step-content">
+                        <h3>Тестирование</h3>
+                        <p>Проводим полное тестирование на всех устройствах</p>
+                    </div>
+                </div>
+                <div class="process-step">
+                    <div class="step-number">05</div>
+                    <div class="step-content">
+                        <h3>Запуск</h3>
+                        <p>Публикуем приложение в App Store и Google Play</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <h2 class="section-title">Начните проект</h2>
+            <p class="section-subtitle">Свяжитесь с нами и получите консультацию</p>
+
+            <div class="contact-content">
+                <form class="contact-form">
+                    <div class="form-group">
+                        <input type="text" placeholder="Ваше имя" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" placeholder="Email" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="tel" placeholder="Телефон">
+                    </div>
+                    <div class="form-group">
+                        <textarea placeholder="Расскажите о вашем проекте" rows="5" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-large">Отправить заявку</button>
+                </form>
+
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <div class="contact-icon">📧</div>
+                        <div>
+                            <h4>Email</h4>
+                            <p>hello@appcraft.dev</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">📱</div>
+                        <div>
+                            <h4>Телефон</h4>
+                            <p>+7 (999) 123-45-67</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">📍</div>
+                        <div>
+                            <h4>Офис</h4>
+                            <p>Москва, Инновационный центр</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="logo">AppCraft<span class="dot">.</span></div>
+                    <p>Создаём мобильные приложения будущего</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>Компания</h4>
+                        <a href="#about">О нас</a>
+                        <a href="#services">Услуги</a>
+                        <a href="#portfolio">Портфолио</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Контакты</h4>
+                        <a href="mailto:hello@appcraft.dev">Email</a>
+                        <a href="tel:+79991234567">Телефон</a>
+                        <a href="#">Telegram</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Социальные сети</h4>
+                        <a href="#">LinkedIn</a>
+                        <a href="#">GitHub</a>
+                        <a href="#">Dribbble</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 AppCraft. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
