@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AppForge - Разработка мобильных приложений</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- 3D Background Canvas -->
+    <canvas id="3d-background"></canvas>
+
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="container">
+            <a href="#" class="logo">
+                <span class="logo-icon">⚡</span>
+                <span class="logo-text">AppForge</span>
+            </a>
+            <ul class="nav-menu" id="nav-menu">
+                <li><a href="#services">Услуги</a></li>
+                <li><a href="#advantages">Преимущества</a></li>
+                <li><a href="#portfolio">Портфолио</a></li>
+                <li><a href="#team">Команда</a></li>
+                <li><a href="#contact">Контакты</a></li>
+            </ul>
+            <button class="menu-toggle" id="menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">
+                    Создаем <span class="gradient-text">инновационные</span> мобильные приложения
+                </h1>
+                <p class="hero-subtitle">
+                    Превращаем ваши идеи в мощные цифровые продукты. 
+                    Современные технологии, индивидуальный подход и результат, 
+                    который превосходит ожидания.
+                </p>
+                <div class="hero-buttons">
+                    <a href="#contact" class="btn btn-primary">Обсудить проект</a>
+                    <a href="#portfolio" class="btn btn-secondary">Смотреть работы</a>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <span class="stat-number" data-count="150">0</span>
+                        <span class="stat-label">Проектов</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" data-count="98">0</span>
+                        <span class="stat-label">% клиентов довольны</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" data-count="8">0</span>
+                        <span class="stat-label">Лет опыта</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <span>Прокрутить</span>
+            <div class="mouse"></div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="services" id="services">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Услуги</span>
+                <h2 class="section-title">Что мы делаем</h2>
+                <p class="section-subtitle">Комплексные решения для вашего бизнеса</p>
+            </div>
+            <div class="services-grid">
+                <div class="service-card" data-aos="fade-up">
+                    <div class="service-icon">📱</div>
+                    <h3 class="service-title">iOS разработка</h3>
+                    <p class="service-description">
+                        Нативные приложения для iPhone и iPad с использованием Swift и UIKit
+                    </p>
+                </div>
+                <div class="service-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="service-icon">🤖</div>
+                    <h3 class="service-title">Android разработка</h3>
+                    <p class="service-description">
+                        Мощные приложения для устройств Android на Kotlin и Java
+                    </p>
+                </div>
+                <div class="service-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="service-icon">🔄</div>
+                    <h3 class="service-title">Кроссплатформенность</h3>
+                    <p class="service-description">
+                        React Native и Flutter решения для одновременного запуска на обеих платформах
+                    </p>
+                </div>
+                <div class="service-card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="service-icon">🎨</div>
+                    <h3 class="service-title">UI/UX Дизайн</h3>
+                    <p class="service-description">
+                        Создание интуитивно понятных и красивых интерфейсов
+                    </p>
+                </div>
+                <div class="service-card" data-aos="fade-up" data-aos-delay="400">
+                    <div class="service-icon">🔧</div>
+                    <h3 class="service-title">Поддержка</h3>
+                    <p class="service-description">
+                        Техническое обслуживание и обновления ваших приложений
+                    </p>
+                </div>
+                <div class="service-card" data-aos="fade-up" data-aos-delay="500">
+                    <div class="service-icon">☁️</div>
+                    <h3 class="service-title">Backend</h3>
+                    <p class="service-description">
+                        Разработка серверной части и API для ваших приложений
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Advantages Section -->
+    <section class="advantages" id="advantages">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Почему мы</span>
+                <h2 class="section-title">Наши преимущества</h2>
+                <p class="section-subtitle">Почему выбирают именно нас</p>
+            </div>
+            <div class="advantages-grid">
+                <div class="advantage-item" data-aos="fade-right">
+                    <div class="advantage-number">01</div>
+                    <h3 class="advantage-title">Опытная команда</h3>
+                    <p class="advantage-description">
+                        Профессионалы с многолетним опытом в разработке мобильных приложений
+                    </p>
+                </div>
+                <div class="advantage-item" data-aos="fade-right" data-aos-delay="100">
+                    <div class="advantage-number">02</div>
+                    <h3 class="advantage-title">Прозрачность</h3>
+                    <p class="advantage-description">
+                        Регулярные отчеты о прогрессе и открытая коммуникация на каждом этапе
+                    </p>
+                </div>
+                <div class="advantage-item" data-aos="fade-right" data-aos-delay="200">
+                    <div class="advantage-number">03</div>
+                    <h3 class="advantage-title">Гарантия качества</h3>
+                    <p class="advantage-description">
+                        Тщательное тестирование и контроль качества перед релизом
+                    </p>
+                </div>
+                <div class="advantage-item" data-aos="fade-right" data-aos-delay="300">
+                    <div class="advantage-number">04</div>
+                    <h3 class="advantage-title">Соблюдение сроков</h3>
+                    <p class="advantage-description">
+                        Четкое планирование и выполнение проекта в оговоренные сроки
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portfolio Section -->
+    <section class="portfolio" id="portfolio">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Портфолио</span>
+                <h2 class="section-title">Наши проекты</h2>
+                <p class="section-subtitle">Успешные кейсы, которыми мы гордимся</p>
+            </div>
+            <div class="portfolio-grid">
+                <div class="portfolio-item" data-aos="zoom-in">
+                    <div class="portfolio-image">
+                        <div class="portfolio-overlay">
+                            <h4>FinTech App</h4>
+                            <p>Мобильное приложение для управления финансами</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="portfolio-item" data-aos="zoom-in" data-aos-delay="100">
+                    <div class="portfolio-image">
+                        <div class="portfolio-overlay">
+                            <h4>Health Tracker</h4>
+                            <p>Приложение для отслеживания здоровья</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="portfolio-item" data-aos="zoom-in" data-aos-delay="200">
+                    <div class="portfolio-image">
+                        <div class="portfolio-overlay">
+                            <h4>E-Commerce</h4>
+                            <p>Приложение для интернет-магазина</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="portfolio-item" data-aos="zoom-in" data-aos-delay="300">
+                    <div class="portfolio-image">
+                        <div class="portfolio-overlay">
+                            <h4>Food Delivery</h4>
+                            <p>Сервис доставки еды</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="portfolio-item" data-aos="zoom-in" data-aos-delay="400">
+                    <div class="portfolio-image">
+                        <div class="portfolio-overlay">
+                            <h4>Travel App</h4>
+                            <p>Планировщик путешествий</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="portfolio-item" data-aos="zoom-in" data-aos-delay="500">
+                    <div class="portfolio-image">
+                        <div class="portfolio-overlay">
+                            <h4>EdTech Platform</h4>
+                            <p>Образовательная платформа</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section class="team" id="team">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Команда</span>
+                <h2 class="section-title">Знакомьтесь с нами</h2>
+                <p class="section-subtitle">Талантливые специалисты, которые делают магию</p>
+            </div>
+            <div class="team-grid">
+                <div class="team-member" data-aos="fade-up">
+                    <div class="member-avatar">
+                        <div class="avatar-placeholder">АК</div>
+                    </div>
+                    <h4 class="member-name">Анна Козлова</h4>
+                    <p class="member-role">CEO / Founder</p>
+                </div>
+                <div class="team-member" data-aos="fade-up" data-aos-delay="100">
+                    <div class="member-avatar">
+                        <div class="avatar-placeholder">ИС</div>
+                    </div>
+                    <h4 class="member-name">Иван Сергеев</h4>
+                    <p class="member-role">Tech Lead</p>
+                </div>
+                <div class="team-member" data-aos="fade-up" data-aos-delay="200">
+                    <div class="member-avatar">
+                        <div class="avatar-placeholder">МП</div>
+                    </div>
+                    <h4 class="member-name">Мария Петрова</h4>
+                    <p class="member-role">UI/UX Designer</p>
+                </div>
+                <div class="team-member" data-aos="fade-up" data-aos-delay="300">
+                    <div class="member-avatar">
+                        <div class="avatar-placeholder">ДМ</div>
+                    </div>
+                    <h4 class="member-name">Дмитрий Михайлов</h4>
+                    <p class="member-role">Senior Developer</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact" id="contact">
+        <div class="container">
+            <div class="contact-wrapper">
+                <div class="contact-info" data-aos="fade-right">
+                    <span class="section-tag">Контакты</span>
+                    <h2 class="section-title">Давайте обсудим ваш проект</h2>
+                    <p class="contact-description">
+                        Готовы воплотить вашу идею в жизнь? Свяжитесь с нами!
+                    </p>
+                    <div class="contact-details">
+                        <div class="contact-item">
+                            <span class="contact-icon">📧</span>
+                            <span>hello@appforge.ru</span>
+                        </div>
+                        <div class="contact-item">
+                            <span class="contact-icon">📞</span>
+                            <span>+7 (999) 123-45-67</span>
+                        </div>
+                        <div class="contact-item">
+                            <span class="contact-icon">📍</span>
+                            <span>Москва, Сити, Башня А</span>
+                        </div>
+                    </div>
+                </div>
+                <form class="contact-form" data-aos="fade-left" id="contact-form">
+                    <div class="form-group">
+                        <input type="text" name="name" placeholder="Ваше имя" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" name="email" placeholder="Email" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="tel" name="phone" placeholder="Телефон">
+                    </div>
+                    <div class="form-group">
+                        <textarea name="message" placeholder="Расскажите о вашем проекте" rows="4"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Отправить заявку</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <a href="#" class="logo">
+                        <span class="logo-icon">⚡</span>
+                        <span class="logo-text">AppForge</span>
+                    </a>
+                    <p class="footer-tagline">Создаем будущее мобильных технологий</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Навигация</h4>
+                    <ul>
+                        <li><a href="#services">Услуги</a></li>
+                        <li><a href="#advantages">Преимущества</a></li>
+                        <li><a href="#portfolio">Портфолио</a></li>
+                        <li><a href="#team">Команда</a></li>
+                    </ul>
+                </div>
+                <div class="footer-social">
+                    <h4>Соцсети</h4>
+                    <div class="social-links">
+                        <a href="#" class="social-link">Telegram</a>
+                        <a href="#" class="social-link">VK</a>
+                        <a href="#" class="social-link">Instagram</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2024 AppForge. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
