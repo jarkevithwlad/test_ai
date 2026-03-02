@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeFlow - Разработка мобильных приложений</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- 3D Background Canvas -->
+    <canvas id="background"></canvas>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <a href="#" class="logo">
+                    <i class="fas fa-code"></i>
+                    CodeFlow
+                </a>
+                <ul class="nav-menu">
+                    <li><a href="#services">Услуги</a></li>
+                    <li><a href="#portfolio">Портфолио</a></li>
+                    <li><a href="#process">Процесс</a></li>
+                    <li><a href="#team">Команда</a></li>
+                    <li><a href="#contact">Контакты</a></li>
+                </ul>
+                <div class="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">
+                    Создаем мобильные приложения,<br>
+                    <span class="gradient-text">которые влюбляют пользователей</span>
+                </h1>
+                <p class="hero-subtitle">
+                    Разрабатываем нативные и кроссплатформенные приложения для iOS и Android с 2015 года. 
+                    Более 200 успешных проектов и 1000+ довольных клиентов.
+                </p>
+                <div class="hero-buttons">
+                    <a href="#contact" class="btn btn-primary">
+                        <span>Обсудить проект</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                    <a href="#portfolio" class="btn btn-outline">
+                        <span>Наши работы</span>
+                    </a>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <span class="stat-number">200+</span>
+                        <span class="stat-label">Проектов</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">98%</span>
+                        <span class="stat-label">Довольных клиентов</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">5+</span>
+                        <span class="stat-label">Лет опыта</span>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="floating-card card-1">
+                    <i class="fab fa-apple"></i>
+                    <span>iOS App</span>
+                </div>
+                <div class="floating-card card-2">
+                    <i class="fab fa-android"></i>
+                    <span>Android App</span>
+                </div>
+                <div class="floating-card card-3">
+                    <i class="fas fa-code"></i>
+                    <span>React Native</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="services">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <span class="gradient-text">Наши услуги</span>
+                </h2>
+                <p>Полный цикл разработки от идеи до запуска в магазины приложений</p>
+            </div>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                    <h3>Разработка с нуля</h3>
+                    <p>Создаем уникальные приложения с нуля, учитывая все ваши бизнес-требования и идеи.</p>
+                    <ul class="service-features">
+                        <li><i class="fas fa-check"></i> Нативная разработка</li>
+                        <li><i class="fas fa-check"></i> React Native / Flutter</li>
+                        <li><i class="fas fa-check"></i> UI/UX дизайн</li>
+                    </ul>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-redo"></i>
+                    </div>
+                    <h3>Редизайн и рестарт</h3>
+                    <p>Превращаем устаревшие приложения в современные продукты с новой функциональностью.</p>
+                    <ul class="service-features">
+                        <li><i class="fas fa-check"></i> Аудит существующего кода</li>
+                        <li><i class="fas fa-check"></i> Обновление UI/UX</li>
+                        <li><i class="fas fa-check"></i> Добавление фич</li>
+                    </ul>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3>Прототипирование</h3>
+                    <p>Быстрое создание прототипов и MVP для проверки гипотез и сбора обратной связи.</p>
+                    <ul class="service-features">
+                        <li><i class="fas fa-check"></i> Wireframes и прототипы</li>
+                        <li><i class="fas fa-check"></i> Интерактивные макеты</li>
+                        <li><i class="fas fa-check"></i> А/Б тестирование</li>
+                    </ul>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Технический консалтинг</h3>
+                    <p>Экспертные рекомендации по архитектуре, выбору стека и масштабированию.</p>
+                    <ul class="service-features">
+                        <li><i class="fas fa-check"></i> Оценка сроков и бюджета</li>
+                        <li><i class="fas fa-check"></i> Выбор технологий</li>
+                        <li><i class="fas fa-check"></i> Архитектурный аудит</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portfolio Section -->
+    <section id="portfolio" class="portfolio">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <span class="gradient-text">Портфолио</span>
+                </h2>
+                <p>Примеры наших успешных проектов для мобильных платформ</p>
+            </div>
+            <div class="portfolio-grid">
+                <div class="portfolio-item">
+                    <div class="portfolio-image">
+                        <div class="portfolio-overlay">
+                            <h3>Fitness Track Pro</h3>
+                            <p>Приложение для отслеживания фитнес-активности</p>
+                            <a href="#" class="portfolio-link">
+                                <i class="fab fa-apple"></i> <i class="fab fa-google-play"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="portfolio-tech">
+                        <span>React Native</span>
+                        <span>iOS</span>
+                        <span>Android</span>
+                    </div>
+                </div>
+                <div class="portfolio-item">
+                    <div class="portfolio-image">
+                        <div class="portfolio-overlay">
+                            <h3>EcoShop</h3>
+                            <p>E-commerce платформа для эко-продуктов</p>
+                            <a href="#" class="portfolio-link">
+                                <i class="fab fa-apple"></i> <i class="fab fa-google-play"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="portfolio-tech">
+                        <span>Flutter</span>
+                        <span>Stripe</span>
+                        <span>Firebase</span>
+                    </div>
+                </div>
+                <div class="portfolio-item">
+                    <div class="portfolio-image">
+                        <div class="portfolio-overlay">
+                            <h3>City Guide</h3>
+                            <p>Гид по туризму с AR-навигацией</p>
+                            <a href="#" class="portfolio-link">
+                                <i class="fab fa-apple"></i> <i class="fab fa-google-play"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="portfolio-tech">
+                        <span>React Native</span>
+                        <span>ARKit</span>
+                        <span>Mapbox</span>
+                    </div>
+                </div>
+                <div class="portfolio-item">
+                    <div class="portfolio-image">
+                        <div class="portfolio-overlay">
+                            <h3>TaskFlow</h3>
+                            <p>Корпоративный менеджер задач</p>
+                            <a href="#" class="portfolio-link">
+                                <i class="fab fa-apple"></i> <i class="fab fa-google-play"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="portfolio-tech">
+                        <span>Native iOS</span>
+                        <span>Kotlin</span>
+                        <span>Realtime DB</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Process Section -->
+    <section id="process" class="process">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <span class="gradient-text">Как мы работаем</span>
+                </h2>
+                <p>Прозрачный процесс разработки с постоянным контролем</p>
+            </div>
+            <div class="process-steps">
+                <div class="process-step">
+                    <div class="step-number">01</div>
+                    <div class="step-content">
+                        <h3>Обсуждение</h3>
+                        <p>Встречаемся, обсуждаем вашу идею, требования и бизнес-цели. Составляем детальный ТЗ.</p>
+                    </div>
+                </div>
+                <div class="process-step">
+                    <div class="step-number">02</div>
+                    <div class="step-content">
+                        <h3>Дизайн и прототип</h3>
+                        <p>Создаем UI/UX дизайн, интерактивные прототипы для согласования концепции.</p>
+                    </div>
+                </div>
+                <div class="process-step">
+                    <div class="step-number">03</div>
+                    <div class="step-content">
+                        <h3>Разработка</h3>
+                        <p>Пишем чистый, масштабируемый код. Регулярно показываем прогресс через демо-версии.</p>
+                    </div>
+                </div>
+                <div class="process-step">
+                    <div class="step-number">04</div>
+                    <div class="step-content">
+                        <h3>Тестирование и запуск</h3>
+                        <p>Проводим полное тестирование, исправляем баги, запускаем в App Store и Google Play.</p>
+                    </div>
+                </div>
+                <div class="process-step">
+                    <div class="step-number">05</div>
+                    <div class="step-content">
+                        <h3>Поддержка</h3>
+                        <p>Осуществляем техническую поддержку, обновляем приложение и внедряем новые фичи.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Us Section -->
+    <section class="why-us">
+        <div class="container">
+            <div class="why-content">
+                <div class="why-text">
+                    <h2 class="section-title">
+                        <span class="gradient-text">Почему выбирают нас</span>
+                    </h2>
+                    <div class="why-features">
+                        <div class="why-feature">
+                            <i class="fas fa-users"></i>
+                            <h3>Опытная команда</h3>
+                            <p>Средний стаж разработчиков — 7+ лет. Мы знаем лучшие практики.</p>
+                        </div>
+                        <div class="why-feature">
+                            <i class="fas fa-shipping-fast"></i>
+                            <h3>Соблюдаем дедлайны</h3>
+                            <p>95% проектов сдаем вовремя благодаря гибкой методологии.</p>
+                        </div>
+                        <div class="why-feature">
+                            <i class="fas fa-shield-alt"></i>
+                            <h3>Безопасность кода</h3>
+                            <p>Используем проверенные фреймворки и следим за обновлениями.</p>
+                        </div>
+                        <div class="why-feature">
+                            <i class="fas fa-headset"></i>
+                            <h3>Поддержка 24/7</h3>
+                            <p>Всегда на связи: Slack, Telegram, email. Решаем проблемы быстро.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="why-stats">
+                    <div class="why-stat-item">
+                        <div class="stat-circle">
+                            <span class="stat-circle-number">10+</span>
+                        </div>
+                        <div class="stat-label">Лет на рынке</div>
+                    </div>
+                    <div class="why-stat-item">
+                        <div class="stat-circle">
+                            <span class="stat-circle-number">25+</span>
+                        </div>
+                        <div class="stat-label">Сотрудников</div>
+                    </div>
+                    <div class="why-stat-item">
+                        <div class="stat-circle">
+                            <span class="stat-circle-number">10M+</span>
+                        </div>
+                        <div class="stat-label">Пользователей приложений</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <span class="gradient-text">Отзывы клиентов</span>
+                </h2>
+                <p>Что говорят о нас наши партнеры</p>
+            </div>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="testimonial-text">
+                        "CodeFlow превзошел все наши ожидания! Приложение, которое мы заказывали, работает быстрее и стабильнее, чем у конкурентов. Отличная команда!"
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">А</div>
+                        <div class="author-info">
+                            <div class="author-name">Алексей Смирнов</div>
+                            <div class="author-company">CEO, StartUp Inc.</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="testimonial-text">
+                        "Заказывали редизайн и рефакторинг старого приложения. Результат — современный продукт, который приняли пользователи. Рекомендую!"
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">Е</div>
+                        <div class="author-info">
+                            <div class="author-name">Елена Волкова</div>
+                            <div class="author-company">Product Manager, TechCorp</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="testimonial-text">
+                        "Разработали для нас сложное финтех-приложение с интеграцией банков. Все прошло без сбоев. Профессионалы своего дела!"
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">Д</div>
+                        <div class="author-info">
+                            <div class="author-name">Дмитрий Орлов</div>
+                            <div class="author-company">Founder, FinanceFlow</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta">
+        <div class="container">
+            <div class="cta-content">
+                <h2>Готовы начать свой проект?</h2>
+                <p>Свяжитесь с нами, и мы обсудим вашу идею. Бесплатная консультация и оценка проекта!</p>
+                <a href="#contact" class="btn btn-primary btn-large">
+                    <span>Получить консультацию</span>
+                    <i class="fas fa-paper-plane"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <div class="contact-grid">
+                <div class="contact-info">
+                    <h2 class="section-title">
+                        <span class="gradient-text">Контакты</span>
+                    </h2>
+                    <p>Мы всегда рады новым проектам и интересным идеям!</p>
+                    <div class="contact-details">
+                        <div class="contact-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <div>
+                                <h4>Адрес</h4>
+                                <p>Москва, ул. Тверская, д. 15</p>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <div>
+                                <h4>Email</h4>
+                                <p>hello@codeflow.ru</p>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-phone"></i>
+                            <div>
+                                <h4>Телефон</h4>
+                                <p>+7 (495) 123-45-67</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="social-links">
+                        <a href="#" class="social-link"><i class="fab fa-telegram"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-vk"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-github"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+                <div class="contact-form">
+                    <form id="contactForm">
+                        <div class="form-group">
+                            <label for="name">Ваше имя *</label>
+                            <input type="text" id="name" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email *</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Телефон</label>
+                            <input type="tel" id="phone" name="phone">
+                        </div>
+                        <div class="form-group">
+                            <label for="message">О проекте *</label>
+                            <textarea id="message" name="message" rows="5" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-submit">
+                            <span>Отправить заявку</span>
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <a href="#" class="logo">
+                        <i class="fas fa-code"></i>
+                        CodeFlow
+                    </a>
+                    <p>Профессиональная разработка мобильных приложений с 2015 года.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Компания</h4>
+                    <a href="#about">О нас</a>
+                    <a href="#portfolio">Портфолио</a>
+                    <a href="#careers">Вакансии</a>
+                    <a href="#blog">Блог</a>
+                </div>
+                <div class="footer-links">
+                    <h4>Услуги</h4>
+                    <a href="#services">Разработка</a>
+                    <a href="#services">Дизайн</a>
+                    <a href="#services">Консалтинг</a>
+                    <a href="#services">Поддержка</a>
+                </div>
+                <div class="footer-links">
+                    <h4>Ресурсы</h4>
+                    <a href="#">Документация</a>
+                    <a href="#">Политика конфиденциальности</a>
+                    <a href="#">Условия использования</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 CodeFlow. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
