@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Красивая Bubble Sort Визуализация</title>
+    <style>
+        :root {
+            --bg-color: #1a1a2e;
+            --bar-color: #4ecca3;
+            --compare-color: #e94560;
+            --sorted-color: #16213e;
+            --text-color: #ffffff;
+            --panel-bg: #16213e;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            font-weight: 300;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-shadow: 0 0 10px rgba(78, 204, 163, 0.5);
+        }
+
+        /* Контейнер для стержней */
+        #array-container {
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            height: 400px;
+            width: 90%;
+            border-bottom: 2px solid var(--bar-color);
+            padding-bottom: 0;
+            position: relative;
+        }
+
+        /* Стили самого стержня */
+        .bar {
+            width: 20px;
+            margin: 0 2px;
+            background: linear-gradient(to top, var(--bar-color), #a8edea);
+            border-radius: 5px 5px 0 0;
+            transition: height 0.2s ease; /* Плавное изменение высоты */
+            box-shadow: 0 0 5px rgba(78, 204, 163, 0.3);
+        }
+
+        /* Классы состояний для JS */
+        .bar.comparing {
+            background: var(--compare-color);
+            box-shadow: 0 0 15px var(--compare-color);
+            transform: scaleY(1.05);
+        }
+
+        .bar.sorted {
+            background: #2a2a40;
+            border-top: 1px solid #4a4a6a;
+            box-shadow: none;
+            opacity: 0.7;
+        }
+
+        /* Панель управления */
+        .controls {
+            margin-top: 30px;
+            display: flex;
+            gap: 15px;
+            background: var(--panel-bg);
+            padding: 15px 25px;
+            border-radius: 50px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            align-items: center;
+        }
+
+        button {
+            background: transparent;
+            border: 2px solid var(--bar-color);
+            color: var(--bar-color);
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            font-size: 14px;
+        }
+
+        button:hover {
+            background: var(--bar-color);
+            color: var(--bg-color);
+            box-shadow: 0 0 15px var(--bar-color);
+        }
+
+        button:disabled {
+            border-color: #555;
+            color: #555;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        /* Слайдер скорости */
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+        }
+        
+        input[type=range] {
+            accent-color: var(--bar-color);
+            cursor: pointer;
+        }
+
+        .status-text {
+            position: absolute;
+            top: -40px;
+            width: 100%;
+            text-align: center;
+            color: var(--compare-color);
+            font-size: 18px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Bubble Sort</h1>
+    
+    <div id="array-container">
+        <!-- Стержни будут сгенерированы здесь -->
+        <div class="status-text" id="status">Сортировка...</div>
+    </div>
+
+    <div class="controls">
+        <button id="generate-btn">Новый массив</button>
+        <button id="sort-btn">Сортировать</button>
+        
+        <div class="slider-container">
+            <label for="speed">Скорость:</label>
+            <input type="range" id="speed" min="1" max="100" value="50">
+        </div>
+    </div>
+
+    <script>
+        const container = document.getElementById('array-container');
+        const generateBtn = document.getElementById('generate-btn');
+        const sortBtn = document.getElementById('sort-btn');
+        const speedInput = document.getElementById('speed');
+        const statusText = document.getElementById('status');
+        
+        let bars = [];
+        let isSorting = false;
+
+        // Функция генерации случайного массива
+        function generateArray() {
+            // Очистка контейнера (удаляем старые бары, оставляем статус)
+            const existingBars = container.querySelectorAll('.bar');
+            existingBars.forEach(bar => bar.remove());
+            
+            bars = [];
+            const amount = 30; // Количество элементов
+            
+            for (let i = 0; i < amount; i++) {
+                const value = Math.floor(Math.random() * 90) + 10; // Высота от 10 до 100
+                
+                const bar = document.createElement('div');
+                bar.classList.add('bar');
+                bar.style.height = `${value}%`;
+                bar.setAttribute('data-value', value);
+                
+                container.appendChild(bar);
+                bars.push(bar);
+            }
+            
+            // Сброс статусов кнопок
+            sortBtn.disabled = false;
+            generateBtn.disabled = false;
+            statusText.style.opacity = '0';
+        }
+
+        // Функция задержки (Sleep) для визуализации
+        const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+        // Основная функция сортировки
+        async function bubbleSort() {
+            if (isSorting) return;
+            isSorting = true;
+            
+            generateBtn.disabled = true;
+            sortBtn.disabled = true;
+            statusText.style.opacity = '1';
+            
+            const n = bars.length;
+            let speed = 101 - speedInput.value; // Инвертируем значение слайдера (меньше = быстрее)
+            if(speed < 10) speed = 10; // Минимальная задержка
+
+            for (let i = 0; i < n - 1; i++) {
+                for (let j = 0; j < n - i - 1; j++) {
+                    
+                    // Визуализация сравнения
+                    bars[j].classList.add('comparing');
+                    bars[j+1].classList.add('comparing');
+                    
+                    // Пауза чтобы увидеть процесс
+                    await sleep(speed);
+
+                    const val1 = parseInt(bars[j].getAttribute('data-value'));
+                    const val2 = parseInt(bars[j+1].getAttribute('data-value'));
+
+                    if (val1 > val2) {
+                        // Обмен значениями (атрибуты и высота)
+                        bars[j].style.height = `${val2}%`;
+                        bars[j+1].style.height = `${val1}%`;
+                        
+                        bars[j].setAttribute('data-value', val2);
+                        bars[j+1].setAttribute('data-value', val1);
+                    }
+
+                    // Убираем цвет сравнения
+                    bars[j].classList.remove('comparing');
+                    bars[j+1].classList.remove('comparing');
+                }
+                
+                // Маркируем последний элемент как отсортированный
+                bars[n - i - 1].classList.add('sorted');
+            }
+            // Первый элемент тоже становится отсортированным в конце
+            bars[0].classList.add('sorted');
+
+            statusText.style.opacity = '0';
+            isSorting = false;
+            generateBtn.disabled = false;
+        }
+
+        // Обработчики событий
+        generateBtn.addEventListener('click', generateArray);
+        sortBtn.addEventListener('click', bubbleSort);
+
+        // Инициализация при загрузке
+        generateArray();
+
+    </script>
+</body>
+</html>
