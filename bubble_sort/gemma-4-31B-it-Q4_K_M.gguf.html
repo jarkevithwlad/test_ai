@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Визуализация Сортировки Пузырьком</title>
+    <style>
+        :root {
+            --primary-color: #4a90e2;
+            --secondary-color: #f39c12;
+            --success-color: #2ecc71;
+            --bg-color: #f8f9fa;
+            --text-color: #333;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+
+        .controls {
+            margin-bottom: 30px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            background: white;
+            padding: 15px 25px;
+            border-radius: 50px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: bold;
+        }
+
+        button:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .reset-btn {
+            background-color: #e74c3c;
+        }
+
+        .speed-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+        }
+
+        #visualizer {
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            height: 400px;
+            width: 80%;
+            max-width: 800px;
+            gap: 4px;
+            padding: 20px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+
+        .bar {
+            flex: 1;
+            background-color: var(--primary-color);
+            border-radius: 4px 4px 0 0;
+            transition: background-color 0.2s ease;
+        }
+
+        .bar.comparing {
+            background-color: var(--secondary-color);
+        }
+
+        .bar.sorted {
+            background-color: var(--success-color);
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Сортировка пузырьком</h1>
+
+    <div class="controls">
+        <button id="startBtn">Запустить</button>
+        <button id="resetBtn" class="reset-btn">Сброс</button>
+        <div class="speed-control">
+            <span>Скорость:</span>
+            <input type="range" id="speedRange" min="10" max="500" value="100" style="direction: rtl;">
+        </div>
+    </div>
+
+    <div id="visualizer"></div>
+
+    <script>
+        const visualizer = document.getElementById('visualizer');
+        const startBtn = document.getElementById('startBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const speedRange = document.getElementById('speedRange');
+
+        let array = [];
+        const ARRAY_SIZE = 30;
+        let isSorting = false;
+
+        function generateArray() {
+            array = [];
+            for (let i = 0; i < ARRAY_SIZE; i++) {
+                array.push(Math.floor(Math.random() * 350) + 20);
+            }
+            renderArray();
+        }
+
+        function renderArray() {
+            visualizer.innerHTML = '';
+            array.forEach(value => {
+                const bar = document.createElement('div');
+                bar.classList.add('bar');
+                bar.style.height = `${value}px`;
+                visualizer.appendChild(bar);
+            });
+        }
+
+        async function bubbleSort() {
+            isSorting = true;
+            startBtn.disabled = true;
+            const bars = document.getElementsByClassName('bar');
+            
+            for (let i = 0; i < array.length; i++) {
+                for (let j = 0; j < array.length - i - 1; j++) {
+                    bars[j].classList.add('comparing');
+                    bars[j + 1].classList.add('comparing');
+
+                    await new Promise(resolve => setTimeout(resolve, speedRange.value));
+
+                    if (array[j] > array[j + 1]) {
+                        // Swap in array
+                        [array[j], array[j + 1]] = [array[j + 1], array[j]];
+                        
+                        // Swap visual heights
+                        bars[j].style.height = `${array[j]}px`;
+                        bars[j + 1].style.height = `${array[j + 1]}px`;
+                    }
+
+                    bars[j].classList.remove('comparing');
+                    bars[j + 1].classList.remove('comparing');
+                }
+                bars[array.length - i - 1].classList.add('sorted');
+            }
+            
+            isSorting = false;
+            startBtn.disabled = false;
+        }
+
+        startBtn.addEventListener('click', bubbleSort);
+        resetBtn.addEventListener('click', () => {
+            if (isSorting) {
+                window.location.reload(); // Simple way to stop async loop
+            } else {
+                generateArray();
+            }
+        });
+
+        generateArray();
+    </script>
+</body>
+</html>
