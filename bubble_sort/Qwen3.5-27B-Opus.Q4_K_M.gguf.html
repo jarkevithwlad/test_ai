@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Сортировка Пузырьком</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        h1 {
+            color: #e94560;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            text-shadow: 0 0 20px rgba(233, 69, 96, 0.5);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 20px rgba(233, 69, 96, 0.5); }
+            to { text-shadow: 0 0 30px rgba(233, 69, 96, 0.8), 0 0 40px rgba(233, 69, 96, 0.6); }
+        }
+
+        .subtitle {
+            color: #a0a0a0;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            margin-bottom: 30px;
+        }
+
+        .array-container {
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            gap: 8px;
+            height: 300px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .bar {
+            width: 40px;
+            border-radius: 8px 8px 0 0;
+            transition: all 0.3s ease;
+            position: relative;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .bar::after {
+            content: attr(data-value);
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #fff;
+            font-weight: bold;
+            font-size: 14px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .bar.default {
+            background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .bar.comparing {
+            background: linear-gradient(180deg, #f093fb 0%, #f5576c 100%) !important;
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(240, 147, 251, 0.6);
+            z-index: 10;
+        }
+
+        .bar.swapping {
+            background: linear-gradient(180deg, #4facfe 0%, #00f2fe 100%) !important;
+            transform: scale(1.1) translateY(-10px);
+            box-shadow: 0 0 30px rgba(79, 172, 254, 0.8);
+            z-index: 10;
+        }
+
+        .bar.sorted {
+            background: linear-gradient(180deg, #43e97b 0%, #38f9d7 100%) !important;
+            box-shadow: 0 0 25px rgba(67, 233, 123, 0.6);
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 12px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-start {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-start:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 25px rgba(102, 126, 234, 0.6);
+        }
+
+        .btn-reset {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(240, 147, 251, 0.4);
+        }
+
+        .btn-reset:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 25px rgba(240, 147, 251, 0.6);
+        }
+
+        .btn-auto {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(79, 172, 254, 0.4);
+        }
+
+        .btn-auto:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 25px rgba(79, 172, 254, 0.6);
+        }
+
+        .btn-generate {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(67, 233, 123, 0.4);
+        }
+
+        .btn-generate:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 25px rgba(67, 233, 123, 0.6);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #fff;
+            font-size: 14px;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 5px;
+        }
+
+        .legend-default {
+            background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .legend-comparing {
+            background: linear-gradient(180deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .legend-swapping {
+            background: linear-gradient(180deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .legend-sorted {
+            background: linear-gradient(180deg, #43e97b 0%, #38f9d7 100%);
+        }
+
+        .info-panel {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            color: #fff;
+        }
+
+        .info-panel h3 {
+            color: #e94560;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .info-panel p {
+            line-height: 1.6;
+            color: #ccc;
+            margin-bottom: 10px;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+        }
+
+        .stat-item {
+            text-align: center;
+            color: #fff;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #e94560;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #a0a0a0;
+            margin-top: 5px;
+        }
+
+        .speed-control {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+
+        .speed-control input[type="range"] {
+            flex: 1;
+            height: 6px;
+            border-radius: 3px;
+            background: rgba(255, 255, 255, 0.2);
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .speed-control input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #e94560;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(233, 69, 96, 0.6);
+        }
+
+        .speed-indicator {
+            min-width: 60px;
+            text-align: right;
+            font-weight: bold;
+            color: #e94560;
+        }
+    </style>
+</head>
+<body>
+    <h1>🫧 Сортировка Пузырьком</h1>
+    <p class="subtitle">Визуализация алгоритма сортировки</p>
+
+    <div class="container">
+        <div class="array-container" id="arrayContainer"></div>
+
+        <div class="speed-control">
+            <span>⚡ Скорость:</span>
+            <input type="range" id="speedRange" min="1" max="100" value="50">
+            <span class="speed-indicator" id="speedIndicator">50%</span>
+        </div>
+
+        <div class="controls">
+            <button class="btn-generate" id="generateBtn">🎲 Новый массив</button>
+            <button class="btn-start" id="startBtn">▶ Запуск</button>
+            <button class="btn-auto" id="autoBtn">🔄 Авто</button>
+            <button class="btn-reset" id="resetBtn">↺ Сброс</button>
+        </div>
+
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color legend-default"></div>
+                <span>Элемент</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color legend-comparing"></div>
+                <span>Сравнение</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color legend-swapping"></div>
+                <span>Обмен</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color legend-sorted"></div>
+                <span>Отсортирован</span>
+            </div>
+        </div>
+
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-value" id="comparisons">0</div>
+                <div class="stat-label">Сравнений</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="swaps">0</div>
+                <div class="stat-label">Обменов</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="passes">0</div>
+                <div class="stat-label">Проходов</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="info-panel">
+        <h3>📖 Как работает алгоритм?</h3>
+        <p>Сортировка пузырьком — простой алгоритм, который многократно проходит по массиву, сравнивая соседние элементы.</p>
+        <p>Если элементы стоят в неправильном порядке, они меняются местами. После каждого прохода "самый большой" элемент "всплывает" в конец массива (как пузырёк воздуха).</p>
+        <p>Алгоритм повторяет проходы, пока массив не будет полностью отсортирован.</p>
+        <p><strong>Сложность:</strong> O(n²) — неэффективен для больших массивов, но отлично подходит для обучения!</p>
+    </div>
+
+    <script>
+        class BubbleSortVisualizer {
+            constructor() {
+                this.array = [];
+                this.arraySize = 15;
+                this.isSorting = false;
+                this.isPaused = false;
+                this.isAuto = false;
+                this.speed = 50;
+                this.comparisons = 0;
+                this.swaps = 0;
+                this.passes = 0;
+
+                this.init();
+                this.setupEventListeners();
+            }
+
+            init() {
+                this.generateArray();
+                this.render();
+            }
+
+            generateArray() {
+                this.array = [];
+                for (let i = 0; i < this.arraySize; i++) {
+                    this.array.push(Math.floor(Math.random() * 80) + 20);
+                }
+            }
+
+            render() {
+                const container = document.getElementById('arrayContainer');
+                container.innerHTML = '';
+
+                const maxValue = Math.max(...this.array);
+
+                this.array.forEach((value, index) => {
+                    const bar = document.createElement('div');
+                    bar.className = 'bar default';
+                    bar.setAttribute('data-value', value);
+                    bar.style.height = `${(value / maxValue) * 220}px`;
+                    bar.id = `bar-${index}`;
+                    container.appendChild(bar);
+                });
+
+                this.resetStats();
+            }
+
+            resetStats() {
+                this.comparisons = 0;
+                this.swaps = 0;
+                this.passes = 0;
+                this.updateStats();
+            }
+
+            updateStats() {
+                document.getElementById('comparisons').textContent = this.comparisons;
+                document.getElementById('swaps').textContent = this.swaps;
+                document.getElementById('passes').textContent = this.passes;
+            }
+
+            getDelay() {
+                return Math.max(50, 550 - this.speed * 5);
+            }
+
+            async sleep(ms) {
+                return new Promise(resolve => {
+                    const startTime = Date.now();
+                    const checkPause = () => {
+                        if (!this.isPaused || Date.now() - startTime >= ms) {
+                            resolve();
+                        } else {
+                            requestAnimationFrame(checkPause);
+                        }
+                    };
+                    requestAnimationFrame(checkPause);
+                });
+            }
+
+            async bubbleSort() {
+                this.isSorting = true;
+                const n = this.array.length;
+
+                for (let pass = 0; pass < n - 1; pass++) {
+                    this.passes++;
+                    this.updateStats();
+
+                    let swapped = false;
+
+                    for (let i = 0; i < n - pass - 1; i++) {
+                        if (this.isPaused) {
+                            await this.waitForResume();
+                        }
+
+                        const bar1 = document.getElementById(`bar-${i}`);
+                        const bar2 = document.getElementById(`bar-${i + 1}`);
+
+                        bar1.classList.add('comparing');
+                        bar2.classList.add('comparing');
+
+                        this.comparisons++;
+                        this.updateStats();
+
+                        await this.sleep(this.getDelay());
+
+                        if (this.array[i] > this.array[i + 1]) {
+                            bar1.classList.remove('comparing');
+                            bar2.classList.remove('comparing');
+                            bar1.classList.add('swapping');
+                            bar2.classList.add('swapping');
+
+                            await this.sleep(this.getDelay());
+
+                            let temp = this.array[i];
+                            this.array[i] = this.array[i + 1];
+                            this.array[i + 1] = temp;
+
+                            this.swaps++;
+                            swapped = true;
+
+                            bar1.setAttribute('data-value', this.array[i]);
+                            bar2.setAttribute('data-value', this.array[i + 1]);
+
+                            this.updateBarHeight(bar1, this.array[i]);
+                            this.updateBarHeight(bar2, this.array[i + 1]);
+
+                            bar1.classList.remove('swapping');
+                            bar2.classList.remove('swapping');
+                        } else {
+                            bar1.classList.remove('comparing');
+                            bar2.classList.remove('comparing');
+                        }
+                    }
+
+                    for (let j = n - pass - 1; j < n; j++) {
+                        const bar = document.getElementById(`bar-${j}`);
+                        if (bar) {
+                            bar.classList.add('sorted');
+                        }
+                    }
+
+                    if (!swapped) break;
+                }
+
+                const firstBar = document.getElementById('bar-0');
+                if (firstBar) firstBar.classList.add('sorted');
+
+                this.isSorting = false;
+                if (this.isAuto) {
+                    this.isAuto = false;
+                    document.getElementById('autoBtn').textContent = '🔄 Авто';
+                    setTimeout(() => this.generateAndSort(), 1000);
+                }
+            }
+
+            updateBarHeight(bar, value) {
+                const maxValue = Math.max(...this.array);
+                bar.style.height = `${(value / maxValue) * 220}px`;
+            }
+
+            waitForResume() {
+                return new Promise(resolve => {
+                    const checkResume = () => {
+                        if (!this.isPaused) {
+                            resolve();
+                        } else {
+                            requestAnimationFrame(checkResume);
+                        }
+                    };
+                    requestAnimationFrame(checkResume);
+                });
+            }
+
+            togglePause() {
+                if (this.isSorting) {
+                    this.isPaused = !this.isPaused;
+                    const startBtn = document.getElementById('startBtn');
+                    startBtn.textContent = this.isPaused ? '▶ Продолжить' : '⏸ Пауза';
+                }
+            }
+
+            generateAndSort() {
+                this.generateArray();
+                this.render();
+                setTimeout(() => this.bubbleSort(), 500);
+            }
+
+            setupEventListeners() {
+                document.getElementById('startBtn').addEventListener('click', () => {
+                    if (this.isSorting && !this.isPaused) {
+                        this.togglePause();
+                    } else if (!this.isSorting) {
+                        this.bubbleSort();
+                    } else {
+                        this.togglePause();
+                    }
+                });
+
+                document.getElementById('resetBtn').addEventListener('click', () => {
+                    this.isSorting = false;
+                    this.isPaused = false;
+                    this.isAuto = false;
+                    document.getElementById('startBtn').textContent = '▶ Запуск';
+                    document.getElementById('autoBtn').textContent = '🔄 Авто';
+                    this.render();
+                });
+
+                document.getElementById('generateBtn').addEventListener('click', () => {
+                    if (!this.isSorting) {
+                        this.generateArray();
+                        this.render();
+                    }
+                });
+
+                document.getElementById('autoBtn').addEventListener('click', () => {
+                    if (this.isAuto) {
+                        this.isAuto = false;
+                        document.getElementById('autoBtn').textContent = '🔄 Авто';
+                    } else {
+                        this.isAuto = true;
+                        document.getElementById('autoBtn').textContent = '⏹ Стоп';
+                        this.generateAndSort();
+                    }
+                });
+
+                const speedRange = document.getElementById('speedRange');
+                const speedIndicator = document.getElementById('speedIndicator');
+
+                speedRange.addEventListener('input', (e) => {
+                    this.speed = parseInt(e.target.value);
+                    speedIndicator.textContent = this.speed + '%';
+                });
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            new BubbleSortVisualizer();
+        });
+    </script>
+</body>
+</html>
