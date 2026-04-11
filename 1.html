@@ -256,9 +256,21 @@
     const encoder = new TextEncoder();
     const decoder = new TextDecoder();
 
+    const EMOJI_POOL = [
+      "😀","😁","😂","🤣","😎","🤖","👻","🐼","🐶","🐱","🦊","🐻",
+      "🐸","🦄","🐙","🐳","🦋","🌈","⭐","🌙","☀️","🔥","🍀","🌵",
+      "🍎","🍉","🍇","🍒","🥑","🍕","🍔","🍩","⚽","🏀","🎯","🎲",
+      "🎸","🎹","🎧","📷","💡","🔒","🔑","🧲","🧩","🚀","✈️","🚲",
+      "🚗","⏰","📦","💎","🪙","🛡️","🧠","🫧","❄️","🌊","⛰️","🏝️",
+      "🌸","🌻","🌹","🍁","🪐","☕","🫖","🍪","🥨","🧃","🕯️","🎈",
+      "🪁","🎁","📎","✂️","📌","🧪","🧬","🧱","🔋","💾","🖥️","📱",
+      "🛰️","📡","🔭","🧭","🗝️","🪄","🫠","😺","🐝","🦉","🦁","🐢"
+    ];
+
     const state = {
       keyPair: null,
       peerPublicKey: null,
+      peerPublicKeyRaw: null,
       peerPublicKeyBase64: "",
       incomingBusy: false
     };
@@ -293,15 +305,16 @@
       return out;
     }
 
-    function maskKey(str) {
-      if (!str) return "Ключ собеседника";
-      return "*".repeat(str.length);
+    function compareBytes(a, b) {
+      const len = Math.min(a.length, b.length);
+      for (let i = 0; i < len; i++) {
+        if (a[i] !== b[i]) return a[i] - b[i];
+      }
+      return a.length - b.length;
     }
 
-    function refreshPeerPlaceholder() {
-      peerKey.placeholder = state.peerPublicKeyBase64
-        ? maskKey(state.peerPublicKeyBase64)
-        : "Ключ собеседника";
+    function refreshPeerPlaceholder(placeholderText) {
+      peerKey.placeholder = placeholderText || "Ключ собеседника";
     }
 
     async function copyText(text) {
@@ -355,6 +368,45 @@
       return state.keyPair;
     }
 
+    async function exportOwnPublicKeyRaw() {
+      const keyPair = await ensureOwnKeys();
+      return new Uint8Array(await crypto.subtle.exportKey("raw", keyPair.publicKey));
+    }
+
+    function fingerprintToEmojis(hashBytes) {
+      const result = [];
+      for (let group = 0; group < 4; group++) {
+        const offset = group * 8;
+        let value = 0n;
+        for (let i = 0; i < 8; i++) {
+          value = (value << 8n) | BigInt(hashBytes[offset + i]);
+        }
+        result.push(EMOJI_POOL[Number(value % BigInt(EMOJI_POOL.length))]);
+      }
+      return result.join(" ");
+    }
+
+    async function getPeerFingerprintPlaceholder() {
+      if (!state.peerPublicKeyRaw) return "Ключ собеседника";
+
+      const ownRaw = await exportOwnPublicKeyRaw();
+      const pair = compareBytes(ownRaw, state.peerPublicKeyRaw) <= 0
+        ? [ownRaw, state.peerPublicKeyRaw]
+        : [state.peerPublicKeyRaw, ownRaw];
+
+      const material = concatBytes(pair[0], pair[1]);
+      const hash = new Uint8Array(await crypto.subtle.digest("SHA-256", material));
+      return fingerprintToEmojis(hash);
+    }
+
+    async function refreshPeerFingerprintPlaceholder() {
+      try {
+        refreshPeerPlaceholder(await getPeerFingerprintPlaceholder());
+      } catch {
+        refreshPeerPlaceholder("Ключ собеседника");
+      }
+    }
+
     async function generateAndCopyPublicKey() {
       const keyPair = await crypto.subtle.generateKey(
         { name: "ECDH", namedCurve: "P-256" },
@@ -367,6 +419,7 @@
       const raw = new Uint8Array(await crypto.subtle.exportKey("raw", keyPair.publicKey));
       const publicKeyBase64 = bytesToBase64(raw);
 
+      await refreshPeerFingerprintPlaceholder();
       await copyText(publicKeyBase64);
       flashButton(copyKeyBtn, "Скопировано", "ok");
     }
@@ -388,10 +441,11 @@
         );
 
         state.peerPublicKey = imported;
+        state.peerPublicKeyRaw = raw;
         state.peerPublicKeyBase64 = compact;
 
         peerKey.value = "";
-        refreshPeerPlaceholder();
+        await refreshPeerFingerprintPlaceholder();
         flashElement(peerKey, "ok");
         return true;
       } catch {
