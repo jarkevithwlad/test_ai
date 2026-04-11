@@ -1,0 +1,532 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="dark" />
+  <title>E2E</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --vvh: 100dvh;
+      --bg: #020202;
+      --bg-2: #060606;
+      --panel: rgba(8, 8, 8, 0.98);
+      --panel-2: rgba(255, 255, 255, 0.03);
+      --line: rgba(255, 255, 255, 0.07);
+      --line-2: rgba(255, 255, 255, 0.13);
+      --text: #f2f2f2;
+      --muted: #676767;
+      --btn-1: #181818;
+      --btn-2: #0b0b0b;
+      --ok: #26c46f;
+      --err: #ef4444;
+      --shadow: 0 20px 50px rgba(0, 0, 0, 0.55);
+      --radius: 18px;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      margin: 0;
+      width: 100%;
+      min-height: 100%;
+      background:
+        radial-gradient(circle at top, rgba(255,255,255,.02), transparent 26%),
+        linear-gradient(180deg, var(--bg-2), var(--bg));
+      color: var(--text);
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      overflow: hidden;
+    }
+
+    body {
+      min-height: var(--vvh);
+      height: var(--vvh);
+      display: grid;
+      place-items: center;
+      padding: 14px;
+    }
+
+    .app {
+      width: min(100%, 520px);
+      height: min(900px, calc(var(--vvh) - 28px));
+      max-height: calc(var(--vvh) - 28px);
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      padding: 14px;
+      backdrop-filter: blur(14px);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .stack {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    button,
+    input,
+    textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel-2);
+      color: var(--text);
+      font: inherit;
+      outline: none;
+      transition:
+        border-color .18s ease,
+        box-shadow .18s ease,
+        background .18s ease,
+        transform .12s ease;
+    }
+
+    input,
+    textarea {
+      padding: 14px 15px;
+      font-size: 16px;
+      line-height: 1.35;
+      resize: none;
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+      color: var(--muted);
+      letter-spacing: .04em;
+    }
+
+    input:focus,
+    textarea:focus {
+      border-color: var(--line-2);
+      box-shadow: 0 0 0 4px rgba(255,255,255,.05);
+    }
+
+    button {
+      min-height: 54px;
+      padding: 14px 16px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1px solid rgba(255,255,255,.06);
+      background: linear-gradient(180deg, var(--btn-1), var(--btn-2));
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.03), 0 10px 28px rgba(0,0,0,.35);
+      flex: 0 0 auto;
+    }
+
+    button:active {
+      transform: scale(.985);
+    }
+
+    #peerKey,
+    #incomingCipher {
+      height: 54px;
+      min-height: 54px;
+      flex: 0 0 auto;
+    }
+
+    #incomingPlain,
+    #outgoingPlain {
+      min-height: 0;
+      flex: 1 1 0;
+      overflow: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    #incomingPlain {
+      flex-basis: 34%;
+    }
+
+    #outgoingPlain {
+      flex-basis: 40%;
+    }
+
+    .readonly {
+      background: rgba(255,255,255,.02);
+    }
+
+    .ok {
+      border-color: rgba(38,196,111,.78) !important;
+      box-shadow: 0 0 0 4px rgba(38,196,111,.12) !important;
+    }
+
+    .err {
+      border-color: rgba(239,68,68,.85) !important;
+      box-shadow: 0 0 0 4px rgba(239,68,68,.12) !important;
+    }
+
+    @media (max-width: 640px) {
+      body {
+        padding:
+          env(safe-area-inset-top)
+          env(safe-area-inset-right)
+          env(safe-area-inset-bottom)
+          env(safe-area-inset-left);
+      }
+
+      .app {
+        width: 100%;
+        height: var(--vvh);
+        max-height: var(--vvh);
+        border-radius: 0;
+        border-left: 0;
+        border-right: 0;
+        padding:
+          max(12px, env(safe-area-inset-top))
+          max(12px, env(safe-area-inset-right))
+          max(12px, env(safe-area-inset-bottom))
+          max(12px, env(safe-area-inset-left));
+      }
+
+      .stack {
+        gap: 10px;
+      }
+
+      #incomingPlain {
+        flex-basis: 32%;
+      }
+
+      #outgoingPlain {
+        flex-basis: 42%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <div class="stack">
+      <button id="copyKeyBtn" type="button">Скопировать ключ</button>
+
+      <input
+        id="peerKey"
+        type="text"
+        placeholder="Ключ собеседника"
+        spellcheck="false"
+        autocapitalize="none"
+        autocorrect="off"
+        autocomplete="off"
+        aria-label="Ключ собеседника"
+      />
+
+      <input
+        id="incomingCipher"
+        type="text"
+        placeholder="Вставьте сообщение"
+        spellcheck="false"
+        autocapitalize="none"
+        autocorrect="off"
+        autocomplete="off"
+        aria-label="Входящее сообщение"
+      />
+
+      <textarea
+        id="incomingPlain"
+        class="readonly"
+        placeholder="Расшифрованный текст"
+        readonly
+        aria-label="Расшифрованный текст"
+      ></textarea>
+
+      <textarea
+        id="outgoingPlain"
+        placeholder="Ваше сообщение"
+        aria-label="Ваше сообщение"
+      ></textarea>
+
+      <button id="encryptBtn" type="button">Зашифровать</button>
+    </div>
+  </main>
+
+  <script>
+    const copyKeyBtn = document.getElementById("copyKeyBtn");
+    const encryptBtn = document.getElementById("encryptBtn");
+    const peerKey = document.getElementById("peerKey");
+    const incomingCipher = document.getElementById("incomingCipher");
+    const incomingPlain = document.getElementById("incomingPlain");
+    const outgoingPlain = document.getElementById("outgoingPlain");
+
+    const encoder = new TextEncoder();
+    const decoder = new TextDecoder();
+
+    const state = {
+      keyPair: null,
+      peerPublicKey: null,
+      peerPublicKeyBase64: "",
+      incomingBusy: false
+    };
+
+    function syncViewportHeight() {
+      const vv = window.visualViewport;
+      const height = vv ? vv.height : window.innerHeight;
+      document.documentElement.style.setProperty("--vvh", `${Math.round(height)}px`);
+    }
+
+    function bytesToBase64(bytes) {
+      let binary = "";
+      const chunk = 0x8000;
+      for (let i = 0; i < bytes.length; i += chunk) {
+        binary += String.fromCharCode(...bytes.subarray(i, i + chunk));
+      }
+      return btoa(binary);
+    }
+
+    function base64ToBytes(base64) {
+      const clean = (base64 || "").replace(/\s+/g, "");
+      const binary = atob(clean);
+      const bytes = new Uint8Array(binary.length);
+      for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+      return bytes;
+    }
+
+    function concatBytes(a, b) {
+      const out = new Uint8Array(a.length + b.length);
+      out.set(a, 0);
+      out.set(b, a.length);
+      return out;
+    }
+
+    function maskKey(str) {
+      if (!str) return "Ключ собеседника";
+      return "*".repeat(str.length);
+    }
+
+    function refreshPeerPlaceholder() {
+      peerKey.placeholder = state.peerPublicKeyBase64
+        ? maskKey(state.peerPublicKeyBase64)
+        : "Ключ собеседника";
+    }
+
+    async function copyText(text) {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(text);
+        return;
+      }
+
+      const temp = document.createElement("textarea");
+      temp.value = text;
+      temp.setAttribute("readonly", "");
+      temp.style.position = "fixed";
+      temp.style.opacity = "0";
+      temp.style.pointerEvents = "none";
+      document.body.appendChild(temp);
+      temp.select();
+      temp.setSelectionRange(0, temp.value.length);
+      document.execCommand("copy");
+      temp.remove();
+    }
+
+    function flashElement(el, mode = "ok", ms = 900) {
+      el.classList.remove("ok", "err");
+      void el.offsetWidth;
+      el.classList.add(mode);
+      clearTimeout(el._flashTimer);
+      el._flashTimer = setTimeout(() => el.classList.remove(mode), ms);
+    }
+
+    function flashButton(btn, text, mode = "ok", ms = 1100) {
+      const original = btn.dataset.label || btn.textContent;
+      btn.dataset.label = original;
+      btn.textContent = text;
+      btn.classList.remove("ok", "err");
+      void btn.offsetWidth;
+      btn.classList.add(mode);
+      clearTimeout(btn._flashTimer);
+      btn._flashTimer = setTimeout(() => {
+        btn.classList.remove("ok", "err");
+        btn.textContent = original;
+      }, ms);
+    }
+
+    async function ensureOwnKeys() {
+      if (state.keyPair) return state.keyPair;
+      state.keyPair = await crypto.subtle.generateKey(
+        { name: "ECDH", namedCurve: "P-256" },
+        true,
+        ["deriveKey"]
+      );
+      return state.keyPair;
+    }
+
+    async function generateAndCopyPublicKey() {
+      const keyPair = await crypto.subtle.generateKey(
+        { name: "ECDH", namedCurve: "P-256" },
+        true,
+        ["deriveKey"]
+      );
+
+      state.keyPair = keyPair;
+
+      const raw = new Uint8Array(await crypto.subtle.exportKey("raw", keyPair.publicKey));
+      const publicKeyBase64 = bytesToBase64(raw);
+
+      await copyText(publicKeyBase64);
+      flashButton(copyKeyBtn, "Скопировано", "ok");
+    }
+
+    async function acceptPeerKey(rawText) {
+      const compact = (rawText || "").replace(/\s+/g, "");
+      if (!compact) return false;
+
+      try {
+        const raw = base64ToBytes(compact);
+        if (raw.length !== 65 || raw[0] !== 4) throw new Error("bad key");
+
+        const imported = await crypto.subtle.importKey(
+          "raw",
+          raw,
+          { name: "ECDH", namedCurve: "P-256" },
+          false,
+          []
+        );
+
+        state.peerPublicKey = imported;
+        state.peerPublicKeyBase64 = compact;
+
+        peerKey.value = "";
+        refreshPeerPlaceholder();
+        flashElement(peerKey, "ok");
+        return true;
+      } catch {
+        flashElement(peerKey, "err");
+        return false;
+      }
+    }
+
+    async function deriveSharedAesKey() {
+      if (!state.keyPair) throw new Error("own key missing");
+      if (!state.peerPublicKey) throw new Error("peer key missing");
+
+      return crypto.subtle.deriveKey(
+        { name: "ECDH", public: state.peerPublicKey },
+        state.keyPair.privateKey,
+        { name: "AES-GCM", length: 256 },
+        false,
+        ["encrypt", "decrypt"]
+      );
+    }
+
+    async function encryptOutgoing() {
+      const text = outgoingPlain.value;
+      if (!text) return;
+
+      try {
+        const key = await deriveSharedAesKey();
+        const iv = crypto.getRandomValues(new Uint8Array(12));
+        const cipherBuffer = await crypto.subtle.encrypt(
+          { name: "AES-GCM", iv },
+          key,
+          encoder.encode(text)
+        );
+
+        const packet = concatBytes(iv, new Uint8Array(cipherBuffer));
+        const packetBase64 = bytesToBase64(packet);
+
+        await copyText(packetBase64);
+        outgoingPlain.value = "";
+        flashButton(encryptBtn, "Скопировано", "ok");
+      } catch {
+        flashButton(encryptBtn, "Ошибка", "err");
+        if (!state.keyPair) flashElement(copyKeyBtn, "err");
+        if (!state.peerPublicKey) flashElement(peerKey, "err");
+      }
+    }
+
+    async function decryptIncoming(packetBase64) {
+      if (state.incomingBusy) return;
+      state.incomingBusy = true;
+
+      try {
+        incomingPlain.value = "";
+
+        const key = await deriveSharedAesKey();
+        const packet = base64ToBytes((packetBase64 || "").trim());
+        if (packet.length < 13) throw new Error("packet too short");
+
+        const iv = packet.slice(0, 12);
+        const cipher = packet.slice(12);
+
+        const plainBuffer = await crypto.subtle.decrypt(
+          { name: "AES-GCM", iv },
+          key,
+          cipher
+        );
+
+        incomingPlain.value = decoder.decode(plainBuffer);
+        flashElement(incomingPlain, "ok", 1000);
+      } catch {
+        incomingPlain.value = "";
+        flashElement(incomingPlain, "err", 1000);
+        if (!state.keyPair) flashElement(copyKeyBtn, "err");
+        if (!state.peerPublicKey) flashElement(peerKey, "err");
+      } finally {
+        incomingCipher.value = "";
+        state.incomingBusy = false;
+      }
+    }
+
+    copyKeyBtn.addEventListener("click", async () => {
+      try {
+        await generateAndCopyPublicKey();
+      } catch {
+        flashButton(copyKeyBtn, "Ошибка", "err");
+      }
+    });
+
+    encryptBtn.addEventListener("click", encryptOutgoing);
+
+    peerKey.addEventListener("paste", async (e) => {
+      e.preventDefault();
+      const text = e.clipboardData?.getData("text") || "";
+      peerKey.value = "";
+      await acceptPeerKey(text);
+    });
+
+    peerKey.addEventListener("input", async () => {
+      const text = peerKey.value;
+      if (!text) return;
+      await acceptPeerKey(text);
+    });
+
+    incomingCipher.addEventListener("paste", (e) => {
+      e.preventDefault();
+      const text = e.clipboardData?.getData("text") || "";
+      incomingCipher.value = "";
+      decryptIncoming(text);
+    });
+
+    incomingCipher.addEventListener("input", (e) => {
+      if (e.inputType === "insertFromPaste" || e.inputType === "insertFromDrop") {
+        const text = incomingCipher.value;
+        incomingCipher.value = "";
+        decryptIncoming(text);
+      }
+    });
+
+    window.addEventListener("keydown", (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === "Enter" && document.activeElement === outgoingPlain) {
+        encryptOutgoing();
+      }
+    });
+
+    window.addEventListener("resize", syncViewportHeight);
+    window.addEventListener("orientationchange", syncViewportHeight);
+
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener("resize", syncViewportHeight);
+      window.visualViewport.addEventListener("scroll", syncViewportHeight);
+    }
+
+    refreshPeerPlaceholder();
+    syncViewportHeight();
+    ensureOwnKeys().catch(() => {});
+  </script>
+</body>
+</html>
