@@ -1,0 +1,1466 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeuralChat - AI Чат Клиент</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-tertiary: #1a1a25;
+            --bg-hover: #222233;
+            --bg-active: #2a2a3d;
+            --border-color: #2a2a3d;
+            --text-primary: #e4e4e7;
+            --text-secondary: #a1a1aa;
+            --text-muted: #71717a;
+            --accent: #7c3aed;
+            --accent-hover: #8b5cf6;
+            --accent-light: rgba(124, 58, 237, 0.15);
+            --danger: #ef4444;
+            --danger-hover: #dc2626;
+            --success: #10b981;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.4);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .app {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            height: 100vh;
+        }
+
+        /* Сайдбар */
+        .sidebar {
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .new-chat-btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--accent);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .new-chat-btn:hover {
+            background: var(--accent-hover);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow);
+        }
+
+        .chat-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px;
+        }
+
+        .chat-item {
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 4px;
+            transition: all 0.15s;
+            position: relative;
+        }
+
+        .chat-item:hover {
+            background: var(--bg-hover);
+        }
+
+        .chat-item.active {
+            background: var(--bg-active);
+        }
+
+        .chat-item-icon {
+            font-size: 16px;
+            opacity: 0.7;
+        }
+
+        .chat-item-title {
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            font-size: 14px;
+        }
+
+        .chat-item-delete {
+            opacity: 0;
+            background: none;
+            border: none;
+            color: var(--danger);
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            transition: all 0.15s;
+        }
+
+        .chat-item:hover .chat-item-delete {
+            opacity: 1;
+        }
+
+        .chat-item-delete:hover {
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .sidebar-footer {
+            padding: 12px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .settings-btn {
+            width: 100%;
+            padding: 10px 12px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.15s;
+        }
+
+        .settings-btn:hover {
+            background: var(--bg-hover);
+        }
+
+        /* Основная область */
+        .main {
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-primary);
+        }
+
+        .main-header {
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            background: var(--bg-secondary);
+        }
+
+        .model-selector {
+            position: relative;
+        }
+
+        .model-selector-btn {
+            padding: 8px 16px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.15s;
+        }
+
+        .model-selector-btn:hover {
+            background: var(--bg-hover);
+        }
+
+        .model-dropdown {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+            min-width: 280px;
+            max-height: 400px;
+            overflow: hidden;
+            display: none;
+            z-index: 100;
+        }
+
+        .model-dropdown.show {
+            display: block;
+            animation: dropdown-appear 0.15s ease;
+        }
+
+        @keyframes dropdown-appear {
+            from {
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .model-dropdown-header {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 12px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .model-option {
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: all 0.15s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .model-option:hover {
+            background: var(--bg-hover);
+        }
+
+        .model-option.selected {
+            background: var(--accent-light);
+        }
+
+        .model-option-name {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .model-option-id {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .incognito-indicator {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .incognito-badge {
+            padding: 4px 8px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .incognito-badge.active {
+            background: var(--accent-light);
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .incognito-badge:hover {
+            background: var(--bg-hover);
+        }
+
+        /* Сообщения */
+        .messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px;
+        }
+
+        .messages-empty {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: var(--text-muted);
+        }
+
+        .messages-empty-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+            opacity: 0.3;
+        }
+
+        .messages-empty h3 {
+            font-size: 20px;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+        }
+
+        .messages-empty p {
+            font-size: 14px;
+            max-width: 400px;
+        }
+
+        .message {
+            margin-bottom: 24px;
+            animation: message-appear 0.2s ease;
+        }
+
+        @keyframes message-appear {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .message-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .message.user .message-avatar {
+            background: linear-gradient(135deg, #3b82f6, #60a5fa);
+        }
+
+        .message.assistant .message-avatar {
+            background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+        }
+
+        .message-role {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .message-time {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .message-content {
+            padding: 12px 16px;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            margin-left: 42px;
+            line-height: 1.6;
+            font-size: 14px;
+            white-space: pre-wrap;
+        }
+
+        .message-content code {
+            background: var(--bg-tertiary);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 13px;
+        }
+
+        .message-content pre {
+            background: var(--bg-tertiary);
+            padding: 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 12px 0;
+        }
+
+        .message-content pre code {
+            background: none;
+            padding: 0;
+        }
+
+        .message.streaming .message-content::after {
+            content: '▋';
+            animation: blink 0.8s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        /* Поле ввода */
+        .input-area {
+            padding: 20px 24px;
+            border-top: 1px solid var(--border-color);
+            background: var(--bg-secondary);
+        }
+
+        .input-container {
+            display: flex;
+            gap: 12px;
+            align-items: flex-end;
+        }
+
+        .input-wrapper {
+            flex: 1;
+            position: relative;
+        }
+
+        .message-input {
+            width: 100%;
+            padding: 14px 18px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 14px;
+            resize: none;
+            font-family: inherit;
+            min-height: 48px;
+            max-height: 160px;
+            line-height: 1.5;
+            transition: all 0.15s;
+        }
+
+        .message-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-light);
+        }
+
+        .message-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .send-btn {
+            padding: 14px 20px;
+            background: var(--accent);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.15s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 48px;
+        }
+
+        .send-btn:hover:not(:disabled) {
+            background: var(--accent-hover);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow);
+        }
+
+        .send-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .stop-btn {
+            background: var(--danger);
+        }
+
+        .stop-btn:hover {
+            background: var(--danger-hover);
+        }
+
+        .input-hint {
+            margin-top: 8px;
+            font-size: 12px;
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        /* Модальное окно */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s;
+        }
+
+        .modal.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            box-shadow: var(--shadow-lg);
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: scale(0.95);
+            transition: transform 0.2s;
+        }
+
+        .modal.show .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 24px;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            transition: all 0.15s;
+        }
+
+        .modal-close:hover {
+            color: var(--text-primary);
+            background: var(--bg-hover);
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 14px;
+            transition: all 0.15s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-light);
+        }
+
+        .form-hint {
+            margin-top: 6px;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .saved-models {
+            margin-top: 16px;
+        }
+
+        .saved-model-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+
+        .saved-model-name {
+            flex: 1;
+            font-size: 14px;
+        }
+
+        .saved-model-id {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .saved-model-delete {
+            background: none;
+            border: none;
+            color: var(--danger);
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: all 0.15s;
+        }
+
+        .saved-model-delete:hover {
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+        }
+
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-hover);
+        }
+
+        /* Скроллбар */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--bg-hover);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--bg-active);
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .app {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                display: none;
+            }
+
+            .main-header {
+                padding: 12px 16px;
+            }
+
+            .messages {
+                padding: 16px;
+            }
+
+            .input-area {
+                padding: 12px 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <!-- Сайдбар -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <div class="logo-icon">💬</div>
+                    <div class="logo-text">NeuralChat</div>
+                </div>
+                <button class="new-chat-btn" onclick="createNewChat()">
+                    <span>+</span>
+                    <span>Новый чат</span>
+                </button>
+            </div>
+            
+            <div class="chat-list" id="chatList">
+                <!-- Чаты будут добавлены динамически -->
+            </div>
+            
+            <div class="sidebar-footer">
+                <button class="settings-btn" onclick="openSettings()">
+                    <span>⚙️</span>
+                    <span>Настройки</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Основная область -->
+        <main class="main">
+            <div class="main-header">
+                <div class="model-selector">
+                    <button class="model-selector-btn" onclick="toggleModelDropdown()">
+                        <span id="currentModelName">minimaxai/minimax-m2.7</span>
+                        <span>▼</span>
+                    </button>
+                    <div class="model-dropdown" id="modelDropdown">
+                        <div class="model-dropdown-header">Доступные модели</div>
+                        <div id="modelOptions">
+                            <!-- Модели будут добавлены динамически -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="incognito-badge" id="incognitoBadge" onclick="toggleIncognito()">
+                    <span>👁️</span>
+                    <span id="incognitoText">Инкогнито выкл</span>
+                </div>
+            </div>
+
+            <div class="messages" id="messages">
+                <div class="messages-empty" id="messagesEmpty">
+                    <div class="messages-empty-icon">🤖</div>
+                    <h3>Начните новый диалог</h3>
+                    <p>Выберите модель и отправьте сообщение, чтобы начать разговор с AI</p>
+                </div>
+            </div>
+
+            <div class="input-area">
+                <div class="input-container">
+                    <div class="input-wrapper">
+                        <textarea 
+                            class="message-input" 
+                            id="messageInput" 
+                            placeholder="Введите сообщение..."
+                            rows="1"
+                            onkeydown="handleKeyDown(event)"
+                            oninput="autoResize(this)"
+                        ></textarea>
+                    </div>
+                    <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+                        <span id="sendIcon">➤</span>
+                        <span id="stopIcon" style="display: none;">■</span>
+                    </button>
+                </div>
+                <div class="input-hint">
+                    Нажмите Enter для отправки, Shift+Enter для новой строки
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Модальное окно настроек -->
+    <div class="modal" id="settingsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Настройки</div>
+                <button class="modal-close" onclick="closeSettings()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">NVIDIA API Key</label>
+                    <input 
+                        type="password" 
+                        class="form-input" 
+                        id="apiKeyInput" 
+                        placeholder="nvapi-..."
+                    >
+                    <div class="form-hint">
+                        Ваш API ключ будет сохранён локально
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Сохранённые модели</label>
+                    <div class="saved-models" id="savedModels">
+                        <!-- Сохранённые модели будут добавлены динамически -->
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Добавить новую модель</label>
+                    <input 
+                        type="text" 
+                        class="form-input" 
+                        id="newModelName" 
+                        placeholder="Название (например, My Model)"
+                        style="margin-bottom: 8px;"
+                    >
+                    <input 
+                        type="text" 
+                        class="form-input" 
+                        id="newModelId" 
+                        placeholder="ID модели (например, meta/llama-3.1-405b)"
+                    >
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeSettings()">Отмена</button>
+                <button class="btn btn-primary" onclick="saveSettings()">Сохранить</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // Данные и состояние
+        // ============================================
+        const DEFAULT_MODELS = [
+            { id: 'minimaxai/minimax-m2.7', name: 'MiniMax M2.7' },
+            { id: 'meta/llama-3.1-405b-instruct', name: 'Llama 3.1 405B' },
+            { id: 'meta/llama-3.1-70b-instruct', name: 'Llama 3.1 70B' },
+            { id: 'meta/llama-3.1-8b-instruct', name: 'Llama 3.1 8B' },
+            { id: 'mistralai/mixtral-8x22b-instruct-v0.1', name: 'Mixtral 8x22B' },
+            { id: 'google/gemma-2-27b-it', name: 'Gemma 2 27B' },
+            { id: 'microsoft/phi-3-medium-128k-instruct', name: 'Phi-3 Medium' },
+            { id: 'qwen/qwen2.5-72b-instruct', name: 'Qwen 2.5 72B' },
+        ];
+
+        let state = {
+            apiKey: localStorage.getItem('neuralchat_api_key') || '',
+            chats: JSON.parse(localStorage.getItem('neuralchat_chats') || '[]'),
+            currentChatId: null,
+            selectedModel: localStorage.getItem('neuralchat_model') || DEFAULT_MODELS[0].id,
+            customModels: JSON.parse(localStorage.getItem('neuralchat_custom_models') || '[]'),
+            incognito: false,
+            isStreaming: false,
+            abortController: null
+        };
+
+        // ============================================
+        // Инициализация
+        // ============================================
+        function init() {
+            renderChatList();
+            renderModelOptions();
+            updateCurrentModelDisplay();
+            updateIncognitoBadge();
+
+            if (state.chats.length === 0) {
+                createNewChat();
+            } else {
+                selectChat(state.chats[0].id);
+            }
+
+            // Закрыть дропдаун при клике вне его
+            document.addEventListener('click', (e) => {
+                const dropdown = document.getElementById('modelDropdown');
+                const selector = document.querySelector('.model-selector');
+                if (!selector.contains(e.target)) {
+                    dropdown.classList.remove('show');
+                }
+            });
+        }
+
+        // ============================================
+        // Управление чатами
+        // ============================================
+        function createNewChat() {
+            const chat = {
+                id: Date.now().toString(),
+                title: 'Новый чат',
+                messages: [],
+                model: state.selectedModel,
+                createdAt: Date.now()
+            };
+
+            state.chats.unshift(chat);
+            saveChats();
+            renderChatList();
+            selectChat(chat.id);
+        }
+
+        function selectChat(chatId) {
+            state.currentChatId = chatId;
+            const chat = state.chats.find(c => c.id === chatId);
+            
+            if (chat) {
+                state.selectedModel = chat.model || state.selectedModel;
+                updateCurrentModelDisplay();
+                renderMessages();
+                updateChatListActive();
+            }
+        }
+
+        function deleteChat(chatId, event) {
+            event.stopPropagation();
+            
+            if (!confirm('Удалить этот чат?')) return;
+
+            state.chats = state.chats.filter(c => c.id !== chatId);
+            saveChats();
+            renderChatList();
+
+            if (state.currentChatId === chatId) {
+                if (state.chats.length > 0) {
+                    selectChat(state.chats[0].id);
+                } else {
+                    state.currentChatId = null;
+                    renderMessages();
+                }
+            }
+        }
+
+        function saveChats() {
+            localStorage.setItem('neuralchat_chats', JSON.stringify(state.chats));
+        }
+
+        function renderChatList() {
+            const chatList = document.getElementById('chatList');
+            chatList.innerHTML = '';
+
+            state.chats.forEach(chat => {
+                const item = document.createElement('div');
+                item.className = 'chat-item';
+                item.dataset.id = chat.id;
+                item.onclick = () => selectChat(chat.id);
+
+                item.innerHTML = `
+                    <span class="chat-item-icon">💬</span>
+                    <span class="chat-item-title">${escapeHtml(chat.title)}</span>
+                    <button class="chat-item-delete" onclick="deleteChat('${chat.id}', event)">✕</button>
+                `;
+
+                chatList.appendChild(item);
+            });
+
+            updateChatListActive();
+        }
+
+        function updateChatListActive() {
+            document.querySelectorAll('.chat-item').forEach(item => {
+                item.classList.toggle('active', item.dataset.id === state.currentChatId);
+            });
+        }
+
+        // ============================================
+        // Сообщения
+        // ============================================
+        function renderMessages() {
+            const messagesContainer = document.getElementById('messages');
+            const emptyState = document.getElementById('messagesEmpty');
+            const chat = state.chats.find(c => c.id === state.currentChatId);
+
+            if (!chat || chat.messages.length === 0) {
+                messagesContainer.innerHTML = '';
+                messagesContainer.appendChild(createEmptyState());
+                return;
+            }
+
+            messagesContainer.innerHTML = '';
+
+            chat.messages.forEach(msg => {
+                const messageEl = createMessageElement(msg);
+                messagesContainer.appendChild(messageEl);
+            });
+
+            scrollToBottom();
+        }
+
+        function createEmptyState() {
+            const empty = document.createElement('div');
+            empty.className = 'messages-empty';
+            empty.innerHTML = `
+                <div class="messages-empty-icon">🤖</div>
+                <h3>Начните новый диалог</h3>
+                <p>Выберите модель и отправьте сообщение, чтобы начать разговор с AI</p>
+            `;
+            return empty;
+        }
+
+        function createMessageElement(msg) {
+            const messageEl = document.createElement('div');
+            messageEl.className = `message ${msg.role}`;
+            if (msg.isStreaming) messageEl.classList.add('streaming');
+
+            const time = new Date(msg.timestamp).toLocaleTimeString('ru-RU', { 
+                hour: '2-digit', 
+                minute: '2-digit' 
+            });
+
+            const avatar = msg.role === 'user' ? '👤' : '🤖';
+            const role = msg.role === 'user' ? 'Вы' : 'AI';
+
+            messageEl.innerHTML = `
+                <div class="message-header">
+                    <div class="message-avatar">${avatar}</div>
+                    <div class="message-role">${role}</div>
+                    <div class="message-time">${time}</div>
+                </div>
+                <div class="message-content">${formatMessage(msg.content)}</div>
+            `;
+
+            return messageEl;
+        }
+
+        function formatMessage(text) {
+            // Простое форматирование: код в ` и блоки кода
+            text = escapeHtml(text);
+            
+            // Блоки кода
+            text = text.replace(/```(\w*)\n?([\s\S]*?)```/g, (match, lang, code) => {
+                return `<pre><code>${code.trim()}</code></pre>`;
+            });
+            
+            // Инлайн код
+            text = text.replace(/`([^`]+)`/g, '<code>$1</code>');
+            
+            return text;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function scrollToBottom() {
+            const messages = document.getElementById('messages');
+            messages.scrollTop = messages.scrollHeight;
+        }
+
+        // ============================================
+        // Отправка сообщений
+        // ============================================
+        async function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const content = input.value.trim();
+
+            if (!content || !state.apiKey || state.isStreaming) return;
+
+            const chat = state.chats.find(c => c.id === state.currentChatId);
+            if (!chat) return;
+
+            // Добавить сообщение пользователя
+            const userMessage = {
+                role: 'user',
+                content: content,
+                timestamp: Date.now()
+            };
+
+            chat.messages.push(userMessage);
+
+            // Обновить заголовок чата из первого сообщения
+            if (chat.messages.filter(m => m.role === 'user').length === 1) {
+                chat.title = content.substring(0, 40) + (content.length > 40 ? '...' : '');
+                renderChatList();
+            }
+
+            // Сохранить (если не инкогнито)
+            if (!state.incognito) {
+                saveChats();
+            }
+
+            // Очистить поле ввода
+            input.value = '';
+            autoResize(input);
+
+            // Рендер сообщений
+            renderMessages();
+
+            // Отправить запрос к API
+            await streamCompletion(chat);
+        }
+
+        async function streamCompletion(chat) {
+            state.isStreaming = true;
+            updateSendButton();
+
+            // Создать пустое сообщение ассистента
+            const assistantMessage = {
+                role: 'assistant',
+                content: '',
+                timestamp: Date.now(),
+                isStreaming: true
+            };
+
+            chat.messages.push(assistantMessage);
+            renderMessages();
+
+            state.abortController = new AbortController();
+
+            try {
+                const messages = chat.messages
+                    .filter(m => !m.isStreaming)
+                    .map(m => ({ role: m.role, content: m.content }));
+
+                const response = await fetch('https://integrate.api.nvidia.com/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${state.apiKey}`
+                    },
+                    body: JSON.stringify({
+                        model: state.selectedModel,
+                        messages: messages,
+                        temperature: 1,
+                        top_p: 0.95,
+                        max_tokens: 8192,
+                        stream: true
+                    }),
+                    signal: state.abortController.signal
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.message || `HTTP ${response.status}`);
+                }
+
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder();
+                let buffer = '';
+
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+
+                    buffer += decoder.decode(value, { stream: true });
+                    const lines = buffer.split('\n');
+                    buffer = lines.pop() || '';
+
+                    for (const line of lines) {
+                        const trimmed = line.trim();
+                        if (!trimmed || !trimmed.startsWith('data:')) continue;
+                        
+                        const data = trimmed.slice(5).trim();
+                        if (data === '[DONE]') continue;
+
+                        try {
+                            const json = JSON.parse(data);
+                            const delta = json.choices?.[0]?.delta?.content;
+                            if (delta) {
+                                assistantMessage.content += delta;
+                                renderMessages();
+                            }
+                        } catch (e) {
+                            // Пропустить невалидный JSON
+                        }
+                    }
+                }
+
+                assistantMessage.isStreaming = false;
+                if (!state.incognito) {
+                    saveChats();
+                }
+                renderMessages();
+
+            } catch (error) {
+                if (error.name === 'AbortError') {
+                    assistantMessage.isStreaming = false;
+                    if (!state.incognito) {
+                        saveChats();
+                    }
+                    renderMessages();
+                } else {
+                    assistantMessage.content = `Ошибка: ${error.message}`;
+                    assistantMessage.isStreaming = false;
+                    renderMessages();
+                }
+            } finally {
+                state.isStreaming = false;
+                state.abortController = null;
+                updateSendButton();
+            }
+        }
+
+        function stopStreaming() {
+            if (state.abortController) {
+                state.abortController.abort();
+            }
+        }
+
+        function updateSendButton() {
+            const sendBtn = document.getElementById('sendBtn');
+            const sendIcon = document.getElementById('sendIcon');
+            const stopIcon = document.getElementById('stopIcon');
+
+            if (state.isStreaming) {
+                sendBtn.classList.add('stop-btn');
+                sendBtn.onclick = stopStreaming;
+                sendIcon.style.display = 'none';
+                stopIcon.style.display = 'inline';
+            } else {
+                sendBtn.classList.remove('stop-btn');
+                sendBtn.onclick = sendMessage;
+                sendIcon.style.display = 'inline';
+                stopIcon.style.display = 'none';
+            }
+        }
+
+        function handleKeyDown(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                sendMessage();
+            }
+        }
+
+        function autoResize(textarea) {
+            textarea.style.height = 'auto';
+            textarea.style.height = Math.min(textarea.scrollHeight, 160) + 'px';
+        }
+
+        // ============================================
+        // Модели
+        // ============================================
+        function getAllModels() {
+            return [...DEFAULT_MODELS, ...state.customModels];
+        }
+
+        function renderModelOptions() {
+            const container = document.getElementById('modelOptions');
+            container.innerHTML = '';
+
+            const allModels = getAllModels();
+
+            allModels.forEach(model => {
+                const option = document.createElement('div');
+                option.className = 'model-option';
+                if (model.id === state.selectedModel) {
+                    option.classList.add('selected');
+                }
+                option.onclick = () => selectModel(model.id);
+
+                option.innerHTML = `
+                    <div>
+                        <div class="model-option-name">${model.name}</div>
+                        <div class="model-option-id">${model.id}</div>
+                    </div>
+                `;
+
+                container.appendChild(option);
+            });
+        }
+
+        function selectModel(modelId) {
+            state.selectedModel = modelId;
+            localStorage.setItem('neuralchat_model', modelId);
+
+            // Обновить модель в текущем чате
+            const chat = state.chats.find(c => c.id === state.currentChatId);
+            if (chat) {
+                chat.model = modelId;
+                saveChats();
+            }
+
+            updateCurrentModelDisplay();
+            renderModelOptions();
+            toggleModelDropdown();
+        }
+
+        function updateCurrentModelDisplay() {
+            const allModels = getAllModels();
+            const model = allModels.find(m => m.id === state.selectedModel);
+            const displayName = model ? model.name : state.selectedModel;
+            document.getElementById('currentModelName').textContent = displayName;
+        }
+
+        function toggleModelDropdown() {
+            document.getElementById('modelDropdown').classList.toggle('show');
+        }
+
+        // ============================================
+        // Инкогнито режим
+        // ============================================
+        function toggleIncognito() {
+            state.incognito = !state.incognito;
+            updateIncognitoBadge();
+        }
+
+        function updateIncognitoBadge() {
+            const badge = document.getElementById('incognitoBadge');
+            const text = document.getElementById('incognitoText');
+
+            if (state.incognito) {
+                badge.classList.add('active');
+                text.textContent = 'Инкогнито вкл';
+            } else {
+                badge.classList.remove('active');
+                text.textContent = 'Инкогнито выкл';
+            }
+        }
+
+        // ============================================
+        // Настройки
+        // ============================================
+        function openSettings() {
+            document.getElementById('apiKeyInput').value = state.apiKey;
+            renderSavedModels();
+            document.getElementById('settingsModal').classList.add('show');
+        }
+
+        function closeSettings() {
+            document.getElementById('settingsModal').classList.remove('show');
+        }
+
+        function saveSettings() {
+            const apiKey = document.getElementById('apiKeyInput').value.trim();
+            state.apiKey = apiKey;
+            localStorage.setItem('neuralchat_api_key', apiKey);
+            closeSettings();
+        }
+
+        function addCustomModel() {
+            const name = document.getElementById('newModelName').value.trim();
+            const modelId = document.getElementById('newModelId').value.trim();
+
+            if (!name || !modelId) {
+                alert('Заполните оба поля');
+                return;
+            }
+
+            state.customModels.push({ id: modelId, name: name });
+            localStorage.setItem('neuralchat_custom_models', JSON.stringify(state.customModels));
+
+            document.getElementById('newModelName').value = '';
+            document.getElementById('newModelId').value = '';
+
+            renderSavedModels();
+            renderModelOptions();
+        }
+
+        function deleteCustomModel(index) {
+            state.customModels.splice(index, 1);
+            localStorage.setItem('neuralchat_custom_models', JSON.stringify(state.customModels));
+            renderSavedModels();
+            renderModelOptions();
+        }
+
+        function renderSavedModels() {
+            const container = document.getElementById('savedModels');
+            container.innerHTML = '';
+
+            if (state.customModels.length === 0) {
+                container.innerHTML = '<div style="color: var(--text-muted); font-size: 14px;">Нет сохранённых моделей</div>';
+                return;
+            }
+
+            state.customModels.forEach((model, index) => {
+                const item = document.createElement('div');
+                item.className = 'saved-model-item';
+                item.innerHTML = `
+                    <div class="saved-model-name">${escapeHtml(model.name)}</div>
+                    <div class="saved-model-id">${escapeHtml(model.id)}</div>
+                    <button class="saved-model-delete" onclick="deleteCustomModel(${index})">✕</button>
+                `;
+                container.appendChild(item);
+            });
+
+            // Добавить кнопку добавления
+            const addBtn = document.createElement('button');
+            addBtn.className = 'btn btn-primary';
+            addBtn.style.width = '100%';
+            addBtn.style.marginTop = '12px';
+            addBtn.textContent = '+ Добавить модель';
+            addBtn.onclick = addCustomModel;
+            container.appendChild(addBtn);
+        }
+
+        // Закрытие модалки при клике вне неё
+        document.getElementById('settingsModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeSettings();
+            }
+        });
+
+        // ============================================
+        // Запуск
+        // ============================================
+        init();
+    </script>
+</body>
+</html>
