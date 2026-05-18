@@ -25,6 +25,13 @@
 				height: 440px;
 			}
 
+			#card-tilt {
+				width: 100%;
+				height: 100%;
+				transform-style: preserve-3d;
+				transform: rotateX(0deg) rotateZ(0deg);
+			}
+
 			#card {
 				width: 100%;
 				height: 100%;
@@ -154,25 +161,27 @@
 
 		<!-- CARD -->
 		<div id="card-container">
-			<div id="card">
-				<div class="card-face card-face-front">
-					<div>
-						<div class="card-label">Front</div>
-						<div class="card-title">Загрузка...</div>
+			<div id="card-tilt">
+				<div id="card">
+					<div class="card-face card-face-front">
+						<div>
+							<div class="card-label">Front</div>
+							<div class="card-title">Загрузка...</div>
+						</div>
+						<div class="card-footer">
+							<div class="card-footer-text">—</div>
+							<div class="card-dot"></div>
+						</div>
 					</div>
-					<div class="card-footer">
-						<div class="card-footer-text">—</div>
-						<div class="card-dot"></div>
-					</div>
-				</div>
-				<div class="card-face card-face-back">
-					<div>
-						<div class="card-label">Back</div>
-						<div class="card-title">Загрузка...</div>
-					</div>
-					<div class="card-footer">
-						<div class="card-footer-text">—</div>
-						<div class="card-dot"></div>
+					<div class="card-face card-face-back">
+						<div>
+							<div class="card-label">Back</div>
+							<div class="card-title">Загрузка...</div>
+						</div>
+						<div class="card-footer">
+							<div class="card-footer-text">—</div>
+							<div class="card-dot"></div>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -239,9 +248,10 @@
 				vec3 dir;
 				float distSquared;
 				vec3 velocity = selfVelocity;
+				velocity.z = 0.0;
 				float limit = SPEED_LIMIT;
 
-				// Predator (mouse) — full screen range, multi-frame effect
+				// Predator (mouse)
 				dir = predator - selfPosition;
 				dir.z = 0.;
 				dist = length( dir );
@@ -256,7 +266,7 @@
 					limit += 8.0;
 				}
 
-				// Soft boundary push (keeps birds in bounds but no center attraction)
+				// Soft boundary push
 				float boundSoft = 100.0;
 				if ( selfPosition.x > UPPER_BOUNDS - boundSoft )
 					velocity.x -= delta * 3.0;
@@ -271,7 +281,7 @@
 				if ( selfPosition.z < -UPPER_BOUNDS + boundSoft )
 					velocity.z += delta * 3.0;
 
-				// Flocking rules
+				// Flocking
 				for ( float y = 0.0; y < height; y++ ) {
 					for ( float x = 0.0; x < width; x++ ) {
 						vec2 ref = vec2( x + 0.5, y + 0.5 ) / resolution.xy;
@@ -304,12 +314,11 @@
 					}
 				}
 
-				// Speed limit
 				if ( length( velocity ) > limit ) {
 					velocity = normalize( velocity ) * limit;
 				}
 
-				gl_FragColor = vec4( velocity, 1.0 );
+				gl_FragColor = vec4( velocity.x, velocity.y, 0.0, 1.0 );
 			}
 		</script>
 
@@ -408,6 +417,7 @@
 			let showingBack = false;
 
 			const card = document.getElementById('card');
+			const cardTilt = document.getElementById('card-tilt');
 			const frontFace = document.querySelector('.card-face-front');
 			const backFace = document.querySelector('.card-face-back');
 
@@ -482,7 +492,6 @@
 				if (i > 0) {
 					const conn = document.createElement('div');
 					conn.className = 'timeline-connector';
-					conn.dataset.index = i;
 					timelineEl.appendChild(conn);
 				}
 				const btn = document.createElement('button');
@@ -493,18 +502,72 @@
 				timelineEl.appendChild(btn);
 			});
 
+			/* ===== TILT ===== */
+			let prevMouseX = 0, prevMouseY = 0;
+			let smoothVelX = 0, smoothVelY = 0;
+			const TILT_SENSITIVITY = 0.04;
+			const TILT_MAX = 8;
+			const SMOOTH_SPEED = 6;
+
+			function onPointerMove(event) {
+				if (event.isPrimary === false) return;
+
+				const dt = _delta;
+				if (dt > 0 && dt < 0.1) {
+					const velX = (event.clientX - prevMouseX) / dt;
+					const velY = (event.clientY - prevMouseY) / dt;
+
+					smoothVelX += (velX - smoothVelX) * Math.min(1, SMOOTH_SPEED * dt);
+					smoothVelY += (velY - smoothVelY) * Math.min(1, SMOOTH_SPEED * dt);
+				}
+
+				prevMouseX = event.clientX;
+				prevMouseY = event.clientY;
+
+				// Update predator position for birds
+				const ndcX = (event.clientX / window.innerWidth) * 2 - 1;
+				const ndcY = -(event.clientY / window.innerHeight) * 2 + 1;
+				velocityUniforms['predator'].value.set(
+					ndcX * BOUNDS_HALF * 1.2,
+					ndcY * BOUNDS_HALF * 1.2,
+					0
+				);
+				velocityUniforms['predatorActive'].value = 1.0;
+			}
+
+			let targetTiltX = 0, currentTiltX = 0;
+			let targetTiltZ = 0, currentTiltZ = 0;
+
+			function updateTilt(dt) {
+			const decay = Math.exp(-SMOOTH_SPEED * dt);
+			smoothVelX *= decay;
+			smoothVelY *= decay;
+
+			// Целевые углы из сглаженной скорости мыши
+			const tiltX = THREE.MathUtils.clamp(smoothVelY * TILT_SENSITIVITY, -TILT_MAX, TILT_MAX);
+			const tiltZ = THREE.MathUtils.clamp(-smoothVelX * TILT_SENSITIVITY, -TILT_MAX, TILT_MAX);
+
+			// Плавный lerp к целевым углам (FPS-независимый)
+			const tiltSmoothing = 1 - Math.exp(-8 * dt);
+			currentTiltX += (tiltX - currentTiltX) * tiltSmoothing;
+			currentTiltZ += (tiltZ - currentTiltZ) * tiltSmoothing;
+
+			cardTilt.style.transform = `rotateX(${currentTiltX}deg) rotateY(${currentTiltZ}deg)`;
+			}
+
+
 			/* ===== THREE.JS ===== */
 			const WIDTH = 32;
 			const BIRDS = WIDTH * WIDTH;
 			const BOUNDS = 800, BOUNDS_HALF = BOUNDS / 2;
 
 			let camera, scene, renderer;
-			let mouseX = 0, mouseY = 0;
 			let windowHalfX = window.innerWidth / 2;
 			let windowHalfY = window.innerHeight / 2;
 			let last = performance.now();
 			let gpuCompute, velocityVariable, positionVariable;
 			let positionUniforms, velocityUniforms, birdUniforms;
+			let _delta = 0;
 
 			class BirdGeometry extends THREE.BufferGeometry {
 				constructor() {
@@ -571,10 +634,12 @@
 				initComputeRenderer();
 				initBirds();
 
-				container.addEventListener( 'pointermove', onPointerMove );
+				// Use document-level pointermove so card doesn't block bird interaction
+				document.addEventListener( 'pointermove', onPointerMove );
 				window.addEventListener( 'resize', onWindowResize );
 
 				updateCardContent(0);
+				updateTimelineUI(0);
 			}
 
 			function initComputeRenderer() {
@@ -642,7 +707,7 @@
 				for ( let k = 0, kl = a.length; k < kl; k += 4 ) {
 					a[k]   = Math.random() * BOUNDS - BOUNDS_HALF;
 					a[k+1] = Math.random() * BOUNDS - BOUNDS_HALF;
-					a[k+2] = (Math.random() - 0.5) * 200;   // keep Z near 0
+					a[k+2] = (Math.random() - 0.5) * 200;
 					a[k+3] = 1;
 				}
 			}
@@ -665,32 +730,18 @@
 				renderer.setSize( window.innerWidth, window.innerHeight );
 			}
 
-			function onPointerMove( event ) {
-				if ( event.isPrimary === false ) return;
-				// Map mouse to world space (full bounds)
-				const ndcX = (event.clientX / window.innerWidth) * 2 - 1;
-				const ndcY = -(event.clientY / window.innerHeight) * 2 + 1;
-				// Project to world space at z=0
-				const predX = ndcX * BOUNDS_HALF * 1.2;
-				const predY = ndcY * BOUNDS_HALF * 1.2;
-				velocityUniforms['predator'].value.set( predX, predY, 0 );
-				velocityUniforms['predatorActive'].value = 1.0;
-			}
-
-			function animate() { render(); }
-
-			function render() {
+			function animate() {
 				const now = performance.now();
-				let delta = ( now - last ) / 1000;
-				if ( delta > 1 ) delta = 1;
+				_delta = ( now - last ) / 1000;
+				if ( _delta > 1 ) _delta = 1;
 				last = now;
 
 				positionUniforms['time'].value = now;
-				positionUniforms['delta'].value = delta;
+				positionUniforms['delta'].value = _delta;
 				velocityUniforms['time'].value = now;
-				velocityUniforms['delta'].value = delta;
+				velocityUniforms['delta'].value = _delta;
 				birdUniforms['time'].value = now;
-				birdUniforms['delta'].value = delta;
+				birdUniforms['delta'].value = _delta;
 
 				gpuCompute.compute();
 
@@ -698,6 +749,9 @@
 				birdUniforms['textureVelocity'].value = gpuCompute.getCurrentRenderTarget( velocityVariable ).texture;
 
 				renderer.render( scene, camera );
+
+				// Update card tilt (time-based, FPS independent)
+				updateTilt(_delta);
 			}
 
 			init();
