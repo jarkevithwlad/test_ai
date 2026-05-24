@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Koda Chat</title>
+<!-- Подключение библиотек для подсветки кода и парсинга markdown -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background: #0f0f0f;
+    color: #cccccc;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.chat {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    scroll-behavior: smooth;
+}
+
+.message {
+    display: flex;
+    gap: 16px;
+    max-width: 85%;
+}
+
+.message.user {
+    align-self: flex-end;
+    flex-direction: row-reverse;
+}
+
+.message.assistant {
+    align-self: flex-start;
+    width: 100%;
+}
+
+.avatar {
+    padding: 6px 12px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 13px;
+    flex-shrink: 0;
+    height: fit-content;
+}
+
+.message.user .avatar {
+    background: #2a2a2a;
+    color: #ffffff;
+}
+
+.message.assistant .avatar {
+    background: #1a1a1a;
+    color: #888888;
+    border: 1px solid #333333;
+}
+
+.message .bubble {
+    padding: 0;
+    line-height: 1.6;
+    word-break: break-word;
+    font-size: 15px;
+    color: #e0e0e0;
+    width: 100%;
+}
+
+.message.user .bubble {
+    background: #1e1e1e;
+    padding: 12px 16px;
+    border-radius: 8px;
+    border: 1px solid #2a2a2a;
+    color: #ffffff;
+    white-space: pre-wrap;
+    width: auto;
+}
+
+/* Стили для отрендеренного Markdown */
+.message.assistant .bubble p {
+    margin-bottom: 16px;
+}
+.message.assistant .bubble p:last-child {
+    margin-bottom: 0;
+}
+.message.assistant .bubble ul,
+.message.assistant .bubble ol {
+    margin-left: 24px;
+    margin-bottom: 16px;
+}
+.message.assistant .bubble code:not(.hljs) {
+    background: #1a1a1a;
+    padding: 3px 6px;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 14px;
+    border: 1px solid #2a2a2a;
+}
+
+/* Блоки кода с липким заголовком (position: sticky) */
+.code-wrapper {
+    margin: 16px 0;
+    border-radius: 8px;
+    border: 1px solid #2a2a2a;
+    background: #141414;
+    position: relative;
+}
+
+.code-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(20, 20, 20, 0.95);
+    backdrop-filter: blur(4px);
+    padding: 8px 12px;
+    border-bottom: 1px solid #2a2a2a;
+    border-top-left-radius: 7px;
+    border-top-right-radius: 7px;
+}
+
+.lang-label {
+    font-size: 12px;
+    color: #666666;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.copy-btn {
+    background: #1e1e1e;
+    border: 1px solid #333333;
+    color: #cccccc;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+}
+
+.copy-btn:hover {
+    background: #2a2a2a;
+    color: #ffffff;
+}
+
+.code-wrapper pre {
+    margin: 0;
+    padding: 16px;
+    overflow-x: auto;
+    font-size: 14px;
+}
+
+/* Переопределяем стандартный цвет #282c34 от highlight.js */
+.hljs {
+    background: transparent !important;
+    padding: 0 !important;
+}
+
+.typing {
+    display: flex;
+    gap: 6px;
+    padding: 12px 0;
+}
+
+.typing span {
+    width: 6px;
+    height: 6px;
+    background: #555555;
+    border-radius: 50%;
+    animation: typing 1.4s infinite;
+}
+
+.typing span:nth-child(2) { animation-delay: 0.2s; }
+.typing span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes typing {
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.3; }
+    30% { transform: translateY(-6px); opacity: 1; }
+}
+
+.input-area {
+    padding: 24px;
+    background: #0f0f0f;
+    border-top: 1px solid #1a1a1a;
+    display: flex;
+    gap: 12px;
+    max-width: 1000px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.input-area textarea {
+    flex: 1;
+    background: #141414;
+    border: 1px solid #2a2a2a;
+    color: #ffffff;
+    padding: 14px 18px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-family: inherit;
+    resize: none;
+    outline: none;
+    min-height: 52px;
+    max-height: 250px;
+    line-height: 1.5;
+    transition: border-color 0.2s;
+}
+
+.input-area textarea:focus {
+    border-color: #444444;
+}
+
+.input-area button {
+    background: #1e1e1e;
+    border: 1px solid #2a2a2a;
+    color: #ffffff;
+    width: 52px;
+    height: 52px;
+    border-radius: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.2s;
+}
+
+.input-area button:hover:not(:disabled) {
+    background: #2a2a2a;
+    border-color: #444444;
+}
+
+.input-area button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.input-area button svg {
+    width: 20px;
+    height: 20px;
+}
+
+.error {
+    color: #ff6b6b;
+    font-size: 14px;
+    padding: 12px 24px;
+    background: #1a0f0f;
+    border-top: 1px solid #331a1a;
+    text-align: center;
+    position: absolute;
+    bottom: 100px;
+    left: 0;
+    right: 0;
+    z-index: 100;
+}
+
+/* Модальное окно для API URL */
+.api-modal {
+    position: fixed;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    z-index: 1000;
+}
+
+.api-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.72);
+}
+
+.api-modal-dialog {
+    position: relative;
+    z-index: 1;
+    width: min(100%, 520px);
+    background: #141414;
+    border: 1px solid #2a2a2a;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+}
+
+.api-modal-dialog h2 {
+    color: #ffffff;
+    font-size: 20px;
+    margin-bottom: 8px;
+}
+
+.api-modal-dialog p {
+    color: #a0a0a0;
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 16px;
+}
+
+.api-modal-dialog input {
+    width: 100%;
+    background: #0f0f0f;
+    border: 1px solid #2a2a2a;
+    color: #ffffff;
+    padding: 14px 16px;
+    border-radius: 12px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.api-modal-dialog input:focus {
+    border-color: #444444;
+}
+
+.api-modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 16px;
+}
+
+.api-modal-actions button {
+    background: #1e1e1e;
+    border: 1px solid #2a2a2a;
+    color: #ffffff;
+    min-width: 120px;
+    height: 44px;
+    padding: 0 18px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.api-modal-actions button:hover {
+    background: #2a2a2a;
+    border-color: #444444;
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: #2a2a2a;
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #3a3a3a;
+}
+</style>
+</head>
+<body>
+
+<div class="chat" id="chat">
+    <!-- Сообщения будут появляться здесь -->
+</div>
+
+<div class="error" id="error" style="display:none;"></div>
+
+<div class="api-modal" id="apiModal">
+    <div class="api-modal-backdrop"></div>
+    <div class="api-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="apiModalTitle">
+        <h2 id="apiModalTitle">Введите API URL</h2>
+        <p>Укажите адрес API один раз. После сохранения он останется в localStorage, и это окно больше не будет появляться.</p>
+        <input
+            id="apiUrlInput"
+            type="text"
+            placeholder="https://example.com/v1/chat/completions"
+            autocomplete="off"
+            spellcheck="false"
+        >
+        <div class="api-modal-actions">
+            <button id="saveApiBtn" type="button">Сохранить</button>
+        </div>
+    </div>
+</div>
+
+<div class="input-area">
+    <textarea
+        id="input"
+        placeholder="Сообщение..."
+        rows="1"
+    ></textarea>
+    <button id="send" disabled>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="22" y1="2" x2="11" y2="13"></line>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+        </svg>
+    </button>
+</div>
+
+<script>
+// Универсальная настройка Marked.js
+const renderer = new marked.Renderer();
+
+renderer.code = function(codeOrToken, language) {
+    let code = '';
+    let lang = '';
+
+    // Поддержка как новых версий marked (принимает объект), так и старых (принимает строку)
+    if (typeof codeOrToken === 'object' && codeOrToken.text) {
+        code = codeOrToken.text;
+        lang = codeOrToken.lang || 'text';
+    } else {
+        code = codeOrToken;
+        lang = language || 'text';
+    }
+
+    const validLang = hljs.getLanguage(lang) ? lang : 'plaintext';
+    const highlighted = hljs.highlight(code, { language: validLang }).value;
+    const escapedCode = code.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+    return `
+    <div class="code-wrapper">
+        <div class="code-header">
+            <span class="lang-label">${lang}</span>
+            <button class="copy-btn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+                <span>Копировать</span>
+            </button>
+        </div>
+        <pre><code class="hljs ${validLang}">${highlighted}</code></pre>
+        <div class="raw-code" style="display: none;">${escapedCode}</div>
+    </div>`;
+};
+
+marked.use({ renderer });
+
+// Логика копирования
+document.addEventListener('click', async (e) => {
+    const btn = e.target.closest('.copy-btn');
+    if (btn) {
+        const wrapper = btn.closest('.code-wrapper');
+        const rawCode = wrapper.querySelector('.raw-code').textContent;
+        try {
+            await navigator.clipboard.writeText(rawCode);
+            const span = btn.querySelector('span');
+            const originalText = span.textContent;
+            span.textContent = 'Скопировано!';
+            setTimeout(() => { span.textContent = originalText; }, 2000);
+        } catch (err) {
+            console.error('Ошибка копирования:', err);
+        }
+    }
+});
+
+const chatEl = document.getElementById('chat');
+const inputEl = document.getElementById('input');
+const sendBtn = document.getElementById('send');
+const errorEl = document.getElementById('error');
+
+const apiModalEl = document.getElementById('apiModal');
+const apiUrlInputEl = document.getElementById('apiUrlInput');
+const saveApiBtn = document.getElementById('saveApiBtn');
+
+let messages = [];
+let isStreaming = false;
+
+function getSavedApiUrl() {
+    return (localStorage.getItem('koda_api_url') || '').trim();
+}
+
+function showApiModal() {
+    apiModalEl.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+    apiUrlInputEl.value = getSavedApiUrl();
+    requestAnimationFrame(() => apiUrlInputEl.focus());
+}
+
+function hideApiModal() {
+    apiModalEl.style.display = 'none';
+    document.body.style.overflow = '';
+}
+
+function saveApiUrl() {
+    const apiUrl = apiUrlInputEl.value.trim();
+
+    if (!apiUrl) {
+        showError('Введите API URL');
+        apiUrlInputEl.focus();
+        return;
+    }
+
+    localStorage.setItem('koda_api_url', apiUrl);
+    hideApiModal();
+}
+
+saveApiBtn.addEventListener('click', saveApiUrl);
+
+apiUrlInputEl.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        saveApiUrl();
+    }
+});
+
+// Автоматическое изменение высоты textarea и активация кнопки
+inputEl.addEventListener('input', () => {
+    inputEl.style.height = 'auto';
+    inputEl.style.height = Math.min(inputEl.scrollHeight, 250) + 'px';
+    sendBtn.disabled = !inputEl.value.trim() || isStreaming;
+});
+
+inputEl.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        if (!isStreaming && inputEl.value.trim()) sendMessage();
+    }
+});
+
+sendBtn.addEventListener('click', () => {
+    if (!isStreaming && inputEl.value.trim()) sendMessage();
+});
+
+function showError(text) {
+    errorEl.textContent = text;
+    errorEl.style.display = 'block';
+    setTimeout(() => errorEl.style.display = 'none', 5000);
+}
+
+function addMessage(role, content) {
+    const div = document.createElement('div');
+    div.className = `message ${role}`;
+
+    const avatar = document.createElement('div');
+    avatar.className = 'avatar';
+    avatar.textContent = role === 'user' ? 'User' : 'AI';
+
+    const bubble = document.createElement('div');
+    bubble.className = 'bubble';
+
+    if (role === 'user') {
+        bubble.textContent = content;
+    } else if (content) {
+        bubble.innerHTML = marked.parse(content);
+    }
+
+    div.appendChild(avatar);
+    div.appendChild(bubble);
+    chatEl.appendChild(div);
+    chatEl.scrollTop = chatEl.scrollHeight;
+
+    return bubble;
+}
+
+function addTyping() {
+    const div = document.createElement('div');
+    div.className = 'message assistant';
+    div.id = 'typing-msg';
+
+    const avatar = document.createElement('div');
+    avatar.className = 'avatar';
+    avatar.textContent = 'AI';
+
+    const typing = document.createElement('div');
+    typing.className = 'typing';
+    typing.innerHTML = '<span></span><span></span><span></span>';
+
+    div.appendChild(avatar);
+    div.appendChild(typing);
+    chatEl.appendChild(div);
+    chatEl.scrollTop = chatEl.scrollHeight;
+}
+
+function removeTyping() {
+    const typing = document.getElementById('typing-msg');
+    if (typing) typing.remove();
+}
+
+async function sendMessage() {
+    const text = inputEl.value.trim();
+    if (!text || isStreaming) return;
+
+    const apiUrl = getSavedApiUrl();
+    if (!apiUrl) {
+        showApiModal();
+        return;
+    }
+
+    isStreaming = true;
+    sendBtn.disabled = true;
+    inputEl.value = '';
+    inputEl.style.height = 'auto';
+    errorEl.style.display = 'none';
+
+    messages.push({ role: 'user', content: text });
+    addMessage('user', text);
+    addTyping();
+
+    const body = {
+        model: localStorage.getItem('koda_model') || 'koda-base',
+        messages: messages,
+        stream: true,
+        max_tokens: parseInt(localStorage.getItem('koda_max_tokens') || '4000'),
+        temperature: parseFloat(localStorage.getItem('koda_temperature') || '0.7'),
+        top_p: parseFloat(localStorage.getItem('koda_top_p') || '1'),
+    };
+
+    const headers = {
+        'Content-Type': 'application/json',
+    };
+
+    const apiKey = localStorage.getItem('koda_api_key');
+    if (apiKey) {
+        headers['Authorization'] = `Bearer ${apiKey}`;
+    }
+
+    try {
+        const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers,
+            body: JSON.stringify(body),
+            signal: AbortSignal.timeout(300000),
+        });
+
+        if (!response.ok) {
+            removeTyping();
+            const errText = await response.text();
+            throw new Error(`Ошибка ${response.status}: ${errText}`);
+        }
+
+        let bubble = null;
+        let fullContent = '';
+
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = '';
+
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+
+            buffer += decoder.decode(value, { stream: true });
+            const lines = buffer.split('\n');
+            buffer = lines.pop();
+
+            for (const line of lines) {
+                if (line.startsWith('data: ')) {
+                    const data = line.slice(6);
+                    if (data === '[DONE]') continue;
+                    try {
+                        const parsed = JSON.parse(data);
+                        const delta = parsed.choices?.[0]?.delta?.content;
+                        if (delta) {
+                            if (!bubble) {
+                                removeTyping();
+                                bubble = addMessage('assistant', '');
+                            }
+
+                            fullContent += delta;
+                            bubble.innerHTML = marked.parse(fullContent);
+
+                            const isScrolledToBottom = chatEl.scrollHeight - chatEl.clientHeight <= chatEl.scrollTop + 100;
+                            if (isScrolledToBottom) {
+                                chatEl.scrollTop = chatEl.scrollHeight;
+                            }
+                        }
+                    } catch (e) {}
+                }
+            }
+        }
+
+        if (!bubble) {
+            removeTyping();
+        } else {
+            messages.push({ role: 'assistant', content: fullContent });
+        }
+
+    } catch (err) {
+        removeTyping();
+        showError(err.message);
+    } finally {
+        isStreaming = false;
+        sendBtn.disabled = inputEl.value.trim() === '';
+        inputEl.focus();
+        chatEl.scrollTop = chatEl.scrollHeight;
+    }
+}
+
+if (!getSavedApiUrl()) {
+    showApiModal();
+}
+</script>
+</body>
+</html>
