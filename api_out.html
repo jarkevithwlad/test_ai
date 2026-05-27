@@ -34,11 +34,18 @@
     --danger: #ff6b6b;
 }
 
+html, body {
+    overflow-x: hidden;
+    max-width: 100vw;
+    width: 100%;
+}
+
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     background: var(--bg);
     color: var(--text-2);
     height: 100vh;
+    height: 100dvh;
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -47,22 +54,27 @@ body {
 .chat {
     flex: 1;
     overflow-y: auto;
+    overflow-x: hidden;
     padding: 24px;
     display: flex;
     flex-direction: column;
     gap: 24px;
     scroll-behavior: smooth;
+    max-width: 100%;
+    width: 100%;
 }
 
 .message {
     display: flex;
     gap: 16px;
     max-width: 85%;
+    min-width: 0;
 }
 
 .message.user {
     align-self: flex-end;
     flex-direction: row-reverse;
+    max-width: 85%;
 }
 
 .message.assistant {
@@ -81,6 +93,7 @@ body {
     font-size: 13px;
     flex-shrink: 0;
     height: fit-content;
+    min-width: fit-content;
 }
 
 .message.user .avatar {
@@ -98,9 +111,11 @@ body {
     padding: 0;
     line-height: 1.6;
     word-break: break-word;
+    overflow-wrap: break-word;
     font-size: 15px;
     color: var(--text);
     width: 100%;
+    min-width: 0;
 }
 
 .message.user .bubble {
@@ -110,7 +125,10 @@ body {
     border: 1px solid var(--border);
     color: #ffffff;
     white-space: pre-wrap;
+    word-break: break-word;
+    overflow-wrap: break-word;
     width: auto;
+    max-width: 100%;
 }
 
 .assistant-stack {
@@ -118,10 +136,12 @@ body {
     display: flex;
     flex-direction: column;
     gap: 12px;
+    min-width: 0;
 }
 
 .assistant-answer {
     width: 100%;
+    min-width: 0;
 }
 
 .assistant-answer.is-empty {
@@ -131,6 +151,8 @@ body {
 .message.assistant .bubble p,
 .reasoning-body p {
     margin-bottom: 16px;
+    word-break: break-word;
+    overflow-wrap: break-word;
 }
 
 .message.assistant .bubble p:last-child,
@@ -144,6 +166,48 @@ body {
 .reasoning-body ol {
     margin-left: 24px;
     margin-bottom: 16px;
+    padding-left: 0;
+    word-break: break-word;
+    overflow-wrap: break-word;
+}
+
+.message.assistant .bubble li,
+.reasoning-body li {
+    word-break: break-word;
+    overflow-wrap: break-word;
+    margin-bottom: 4px;
+}
+
+.message.assistant .bubble a,
+.reasoning-body a {
+    word-break: break-word;
+    overflow-wrap: break-word;
+}
+
+.message.assistant .bubble table,
+.reasoning-body table {
+    display: block;
+    overflow-x: auto;
+    max-width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 16px;
+    width: max-content;
+}
+
+.message.assistant .bubble table th,
+.message.assistant .bubble table td,
+.reasoning-body table th,
+.reasoning-body table td {
+    border: 1px solid var(--border-2);
+    padding: 6px 10px;
+    white-space: nowrap;
+}
+
+.message.assistant .bubble img,
+.reasoning-body img {
+    max-width: 100%;
+    height: auto;
+    display: block;
 }
 
 .message.assistant .bubble code:not(.hljs):not(.katex *),
@@ -154,6 +218,8 @@ body {
     font-family: monospace;
     font-size: 14px;
     border: 1px solid var(--border);
+    word-break: break-word;
+    overflow-wrap: break-word;
 }
 
 .code-wrapper {
@@ -163,6 +229,15 @@ body {
     background: var(--bg-2);
     position: relative;
     overflow: hidden;
+    max-width: 100%;
+}
+
+.code-scroll {
+    overflow-x: auto;
+    overflow-y: auto;
+    max-height: 600px;
+    position: relative;
+    min-width: 0;
 }
 
 .code-header {
@@ -176,6 +251,9 @@ body {
     backdrop-filter: blur(4px);
     padding: 8px 12px;
     border-bottom: 1px solid var(--border);
+    min-width: 100%;
+    width: fit-content;
+    max-width: none;
 }
 
 .lang-label {
@@ -183,6 +261,8 @@ body {
     color: var(--muted-2);
     text-transform: uppercase;
     font-weight: 600;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
 .copy-btn {
@@ -198,6 +278,8 @@ body {
     justify-content: center;
     gap: 6px;
     transition: all 0.2s;
+    flex-shrink: 0;
+    white-space: nowrap;
 }
 
 .copy-btn:hover {
@@ -208,8 +290,8 @@ body {
 .code-wrapper pre {
     margin: 0;
     padding: 16px;
-    overflow-x: auto;
     font-size: 14px;
+    min-width: fit-content;
 }
 
 .hljs {
@@ -245,6 +327,8 @@ body {
     background: linear-gradient(180deg, #161616 0%, #121212 100%);
     border-radius: 12px;
     overflow: hidden;
+    max-width: 100%;
+    width: 100%;
 }
 
 .reasoning-box.visible {
@@ -274,6 +358,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 2px;
+    flex: 1;
 }
 
 .reasoning-title {
@@ -307,6 +392,7 @@ body {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    max-width: 100%;
 }
 
 .reasoning-box.collapsed .reasoning-preview {
@@ -319,6 +405,9 @@ body {
     color: #d5d5d5;
     font-size: 14px;
     line-height: 1.65;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    min-width: 0;
 }
 
 .reasoning-box.collapsed .reasoning-body {
@@ -327,6 +416,43 @@ body {
 
 .reasoning-body pre {
     white-space: pre-wrap;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    max-width: 100%;
+}
+
+.copy-message-btn {
+    background: var(--surface-2);
+    border: 1px solid var(--border-2);
+    color: var(--text-2);
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+    margin-top: 4px;
+    align-self: flex-start;
+    flex-shrink: 0;
+}
+
+.copy-message-btn:hover {
+    background: var(--border);
+    color: #ffffff;
+    border-color: #444444;
+}
+
+.copy-message-btn svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+}
+
+.copy-message-btn span {
+    white-space: nowrap;
 }
 
 .input-area {
@@ -339,6 +465,7 @@ body {
     margin: 0 auto;
     width: 100%;
     align-items: flex-end;
+    flex-shrink: 0;
 }
 
 .input-area textarea {
@@ -356,6 +483,7 @@ body {
     max-height: 250px;
     line-height: 1.5;
     transition: border-color 0.2s;
+    min-width: 0;
 }
 
 .input-area textarea:focus {
@@ -404,6 +532,7 @@ body {
     left: 0;
     right: 0;
     z-index: 100;
+    word-break: break-word;
 }
 
 .api-modal {
@@ -426,6 +555,7 @@ body {
     position: relative;
     z-index: 1;
     width: min(100%, 560px);
+    max-width: 100%;
     background: var(--bg-2);
     border: 1px solid var(--border);
     border-radius: 16px;
@@ -444,6 +574,7 @@ body {
     font-size: 14px;
     line-height: 1.5;
     margin-bottom: 16px;
+    word-break: break-word;
 }
 
 .form-grid {
@@ -472,6 +603,7 @@ body {
     font-size: 14px;
     outline: none;
     transition: border-color 0.2s;
+    min-width: 0;
 }
 
 .api-modal-dialog input:focus {
@@ -483,6 +615,7 @@ body {
     justify-content: flex-end;
     gap: 10px;
     margin-top: 18px;
+    flex-wrap: wrap;
 }
 
 .api-modal-actions button {
@@ -521,6 +654,7 @@ body {
     overflow-x: auto;
     overflow-y: hidden;
     padding: 8px 2px;
+    max-width: 100%;
 }
 
 .katex {
@@ -553,6 +687,10 @@ body {
         gap: 10px;
     }
 
+    .message.user {
+        max-width: 95%;
+    }
+
     .input-area {
         padding: 16px;
     }
@@ -564,6 +702,25 @@ body {
 
     .api-modal-dialog {
         padding: 18px;
+    }
+
+    .code-scroll {
+        max-height: 450px;
+    }
+
+    .code-wrapper pre {
+        padding: 12px;
+        font-size: 13px;
+    }
+
+    .copy-btn {
+        padding: 5px 10px;
+        font-size: 11px;
+    }
+
+    .copy-message-btn {
+        padding: 7px 12px;
+        font-size: 11px;
     }
 }
 </style>
@@ -694,17 +851,19 @@ renderer.code = function(codeOrToken, language) {
 
     return `
     <div class="code-wrapper">
-        <div class="code-header">
-            <span class="lang-label">${escapeHtml(lang || 'text')}</span>
-            <button class="copy-btn" type="button">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                </svg>
-                <span>Копировать</span>
-            </button>
+        <div class="code-scroll">
+            <div class="code-header">
+                <span class="lang-label">${escapeHtml(lang || 'text')}</span>
+                <button class="copy-btn" type="button">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                    <span>Копировать</span>
+                </button>
+            </div>
+            <pre><code class="hljs ${validLang}">${highlighted}</code></pre>
         </div>
-        <pre><code class="hljs ${validLang}">${highlighted}</code></pre>
         <div class="raw-code" style="display: none;">${escapedCode}</div>
     </div>`;
 };
@@ -1024,8 +1183,34 @@ function createAssistantMessageShell() {
     const bubble = document.createElement('div');
     bubble.className = 'bubble assistant-answer is-empty';
 
+    const copyMessageBtn = document.createElement('button');
+    copyMessageBtn.className = 'copy-message-btn';
+    copyMessageBtn.type = 'button';
+    copyMessageBtn.style.display = 'none';
+    copyMessageBtn.innerHTML = `
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+        </svg>
+        <span>Копировать ответ</span>
+    `;
+    copyMessageBtn.addEventListener('click', async () => {
+        const raw = bubble.dataset.rawContent || '';
+        if (!raw) return;
+        try {
+            await navigator.clipboard.writeText(raw);
+            const span = copyMessageBtn.querySelector('span');
+            const original = span.textContent;
+            span.textContent = 'Скопировано!';
+            setTimeout(() => { span.textContent = original; }, 2000);
+        } catch (err) {
+            console.error('Ошибка копирования:', err);
+        }
+    });
+
     stack.appendChild(reasoningBox);
     stack.appendChild(bubble);
+    stack.appendChild(copyMessageBtn);
 
     div.appendChild(avatar);
     div.appendChild(stack);
@@ -1040,7 +1225,8 @@ function createAssistantMessageShell() {
         reasoningToggle: toggle,
         reasoningHint: hint,
         reasoningPreview: preview,
-        reasoningBody: body
+        reasoningBody: body,
+        copyMessageBtn
     };
 }
 
@@ -1152,11 +1338,19 @@ function updateAssistantContent(view, fullContent) {
     if (!fullContent.trim()) {
         view.bubble.classList.add('is-empty');
         view.bubble.innerHTML = '';
+        view.bubble.dataset.rawContent = '';
+        if (view.copyMessageBtn) view.copyMessageBtn.style.display = 'none';
         return;
     }
 
     view.bubble.classList.remove('is-empty');
     view.bubble.innerHTML = renderMarkdownWithMath(fullContent);
+    view.bubble.dataset.rawContent = fullContent;
+
+    if (view.copyMessageBtn) {
+        view.copyMessageBtn.style.display = 'inline-flex';
+    }
+
     scrollChatIfNearBottom();
 }
 
@@ -1351,7 +1545,7 @@ async function sendMessage() {
         isStreaming = false;
         refreshSendState();
         inputEl.focus();
-        chatEl.scrollTop = chatEl.scrollHeight;
+        //chatEl.scrollTop = chatEl.scrollHeight;
     }
 }
 
