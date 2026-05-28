@@ -1,0 +1,1119 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Монохромный конвертер изображений</title>
+  <style>
+    :root {
+      --bg: #0f1115;
+      --panel: #171a21;
+      --panel-2: #1d2230;
+      --text: #e8ecf1;
+      --muted: #9aa4b2;
+      --accent: #4da3ff;
+      --accent-2: #7cc4ff;
+      --border: #2b3140;
+      --good: #43c47b;
+      --danger: #ff6b6b;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --radius: 16px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(180deg, #0d1016 0%, #121722 100%);
+      color: var(--text);
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      min-height: 100%;
+    }
+
+    body.dragover-page::before {
+      content: "Отпустите файлы, чтобы загрузить";
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(77, 163, 255, 0.14);
+      border: 3px dashed rgba(124, 196, 255, 0.65);
+      color: #fff;
+      font-size: 28px;
+      font-weight: 700;
+      z-index: 9999;
+      backdrop-filter: blur(3px);
+      pointer-events: none;
+    }
+
+    .app {
+      width: min(1380px, calc(100% - 32px));
+      margin: 24px auto 40px;
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 20px;
+    }
+
+    .panel {
+      background: rgba(23, 26, 33, 0.95);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .sidebar {
+      padding: 18px;
+      position: sticky;
+      top: 16px;
+      align-self: start;
+    }
+
+    .main {
+      padding: 18px;
+      min-height: 80vh;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 28px;
+      line-height: 1.15;
+    }
+
+    .subtitle {
+      margin: 0 0 18px;
+      color: var(--muted);
+      line-height: 1.5;
+      font-size: 14px;
+    }
+
+    .block {
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 14px;
+    }
+
+    .block h2 {
+      margin: 0 0 12px;
+      font-size: 15px;
+      color: #ffffff;
+    }
+
+    .controls {
+      display: grid;
+      gap: 10px;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .field {
+      display: grid;
+      gap: 6px;
+    }
+
+    .field label {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    input[type="number"],
+    input[type="range"],
+    select,
+    button,
+    .file-btn {
+      width: 100%;
+    }
+
+    input[type="number"],
+    select {
+      background: #10141c;
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 14px;
+      outline: none;
+    }
+
+    input[type="range"] {
+      accent-color: var(--accent);
+    }
+
+    .range-value {
+      color: var(--accent-2);
+      font-weight: 600;
+      font-size: 13px;
+      text-align: right;
+    }
+
+    button,
+    .file-btn {
+      border: 0;
+      background: linear-gradient(180deg, var(--accent) 0%, #2d7fe0 100%);
+      color: white;
+      border-radius: 12px;
+      padding: 11px 14px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform .12s ease, opacity .12s ease, box-shadow .12s ease;
+      box-shadow: 0 8px 20px rgba(77,163,255,.25);
+      text-align: center;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+    }
+
+    button:hover,
+    .file-btn:hover {
+      transform: translateY(-1px);
+      opacity: .96;
+    }
+
+    button.secondary {
+      background: #222938;
+      box-shadow: none;
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+
+    button.danger {
+      background: linear-gradient(180deg, #ff7a7a 0%, #e75151 100%);
+      box-shadow: 0 8px 20px rgba(255,107,107,.18);
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .dropzone {
+      border: 2px dashed #3c4d68;
+      border-radius: 14px;
+      padding: 18px;
+      background: rgba(255,255,255,.02);
+      text-align: center;
+      transition: border-color .15s ease, background .15s ease, transform .15s ease;
+    }
+
+    .dropzone.active {
+      border-color: var(--accent);
+      background: rgba(77, 163, 255, 0.10);
+      transform: scale(1.01);
+    }
+
+    .dropzone p {
+      margin: 6px 0;
+    }
+
+    .dropzone .hint {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .tab {
+      border: 1px solid var(--border);
+      background: #131826;
+      color: var(--text);
+      border-radius: 999px;
+      padding: 9px 12px;
+      cursor: pointer;
+      font-size: 13px;
+      max-width: 260px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .tab.active {
+      background: linear-gradient(180deg, #29568e 0%, #1d4676 100%);
+      border-color: #3d6ea8;
+      color: #fff;
+    }
+
+    .preview-grid {
+      display: grid;
+      grid-template-columns: minmax(280px, 1fr) minmax(280px, 1fr);
+      gap: 16px;
+    }
+
+    .card {
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px;
+    }
+
+    .card h3 {
+      margin: 0 0 10px;
+      font-size: 14px;
+      color: #fff;
+    }
+
+    .canvas-wrap {
+      background:
+        linear-gradient(45deg, #161b26 25%, #111521 25%, #111521 50%, #161b26 50%, #161b26 75%, #111521 75%, #111521 100%);
+      background-size: 18px 18px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: auto;
+      min-height: 320px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
+    }
+
+    canvas {
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+      max-width: 100%;
+      height: auto;
+      display: block;
+      background: white;
+      border-radius: 8px;
+    }
+
+    .click-download {
+      cursor: pointer;
+      transition: transform .12s ease, box-shadow .12s ease;
+    }
+
+    .click-download:hover {
+      transform: scale(1.01);
+      box-shadow: 0 0 0 2px rgba(77,163,255,.35);
+    }
+
+    .meta {
+      margin-top: 10px;
+      font-size: 12px;
+      color: var(--muted);
+      display: grid;
+      gap: 4px;
+    }
+
+    .empty {
+      display: grid;
+      place-items: center;
+      min-height: 420px;
+      border: 1px dashed var(--border);
+      border-radius: 16px;
+      color: var(--muted);
+      text-align: center;
+      padding: 20px;
+      background: rgba(255,255,255,.02);
+    }
+
+    .footer-note {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (max-width: 1100px) {
+      .app {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        position: static;
+      }
+
+      .preview-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .app {
+        width: min(100% - 16px, 100%);
+        margin: 12px auto 20px;
+      }
+
+      .sidebar,
+      .main {
+        padding: 14px;
+      }
+
+      .row {
+        grid-template-columns: 1fr;
+      }
+
+      h1 {
+        font-size: 23px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="panel sidebar">
+      <h1>Монохромный конвертер</h1>
+      <p class="subtitle">
+        Загрузите одно или несколько изображений, настройте размер и плотность, затем нажмите на готовое изображение для скачивания PNG.
+      </p>
+
+      <div class="block">
+        <h2>Загрузка</h2>
+        <div id="dropzone" class="dropzone">
+          <p><strong>Перетащите файлы сюда</strong></p>
+          <p class="hint">или выберите через кнопку ниже</p>
+          <label class="file-btn" for="fileInput">Выбрать файл(ы)</label>
+          <input id="fileInput" class="hidden" type="file" accept="image/*" multiple />
+        </div>
+      </div>
+
+      <div class="block">
+        <h2>Размер</h2>
+        <div class="controls">
+          <div class="field">
+            <label for="scaleMode">Режим масштабирования</label>
+            <select id="scaleMode">
+              <option value="contain">Вписать в размер</option>
+              <option value="cover">Заполнить размер</option>
+              <option value="stretch">Растянуть</option>
+              <option value="original">Оригинальный размер</option>
+            </select>
+          </div>
+
+          <div class="row">
+            <div class="field">
+              <label for="widthInput">Ширина, px</label>
+              <input id="widthInput" type="number" min="1" max="8000" value="512" />
+            </div>
+            <div class="field">
+              <label for="heightInput">Высота, px</label>
+              <input id="heightInput" type="number" min="1" max="8000" value="512" />
+            </div>
+          </div>
+
+          <div class="field">
+            <label>
+              <input id="keepAspect" type="checkbox" checked />
+              Сохранять пропорции при ручном изменении
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="block">
+        <h2>Плотность и обработка</h2>
+        <div class="controls">
+          <div class="field">
+            <label for="thresholdRange">Порог / плотность чёрного</label>
+            <input id="thresholdRange" type="range" min="0" max="255" value="128" />
+            <div class="range-value"><span id="thresholdValue">128</span></div>
+          </div>
+
+          <div class="field">
+            <label for="brightnessRange">Яркость</label>
+            <input id="brightnessRange" type="range" min="-100" max="100" value="0" />
+            <div class="range-value"><span id="brightnessValue">0</span></div>
+          </div>
+
+          <div class="field">
+            <label for="contrastRange">Контраст</label>
+            <input id="contrastRange" type="range" min="-100" max="100" value="0" />
+            <div class="range-value"><span id="contrastValue">0</span></div>
+          </div>
+
+          <div class="field">
+            <label for="ditherSelect">Алгоритм</label>
+            <select id="ditherSelect">
+              <option value="floyd">Floyd-Steinberg</option>
+              <option value="threshold">Простой порог</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="invertCheck">
+              <input id="invertCheck" type="checkbox" />
+              Инвертировать чёрное/белое
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="block">
+        <h2>Действия</h2>
+        <div class="controls">
+          <button id="rebuildBtn">Пересчитать текущую вкладку</button>
+          <button id="rebuildAllBtn" class="secondary">Пересчитать все</button>
+          <button id="downloadCurrentBtn" class="secondary">Скачать текущий PNG</button>
+          <button id="downloadAllBtn" class="secondary">Скачать все PNG</button>
+          <button id="clearBtn" class="danger">Очистить список</button>
+        </div>
+      </div>
+
+      <div class="footer-note">
+        Нажатие на обработанное изображение справа тоже скачивает файл. Если загружено несколько изображений, между ними можно переключаться вкладками.
+      </div>
+    </aside>
+
+    <main class="panel main">
+      <div class="toolbar">
+        <div class="muted">Вкладки появляются после загрузки файлов.</div>
+      </div>
+
+      <div id="tabs" class="tabs"></div>
+
+      <div id="emptyState" class="empty">
+        <div>
+          <h2 style="margin-top:0;">Пока нет изображений</h2>
+          <p>Выберите файлы кнопкой слева или просто перетащите их на страницу.</p>
+        </div>
+      </div>
+
+      <div id="workspace" class="hidden">
+        <div class="preview-grid">
+          <section class="card">
+            <h3>Оригинал</h3>
+            <div class="canvas-wrap">
+              <canvas id="sourceCanvas"></canvas>
+            </div>
+            <div class="meta" id="sourceMeta"></div>
+          </section>
+
+          <section class="card">
+            <h3>Результат (клик = скачать PNG)</h3>
+            <div class="canvas-wrap">
+              <canvas id="resultCanvas" class="click-download" title="Нажмите, чтобы скачать PNG"></canvas>
+            </div>
+            <div class="meta" id="resultMeta"></div>
+          </section>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const state = {
+      items: [],
+      activeIndex: -1
+    };
+
+    const els = {
+      fileInput: document.getElementById('fileInput'),
+      dropzone: document.getElementById('dropzone'),
+      tabs: document.getElementById('tabs'),
+      emptyState: document.getElementById('emptyState'),
+      workspace: document.getElementById('workspace'),
+
+      sourceCanvas: document.getElementById('sourceCanvas'),
+      resultCanvas: document.getElementById('resultCanvas'),
+      sourceMeta: document.getElementById('sourceMeta'),
+      resultMeta: document.getElementById('resultMeta'),
+
+      widthInput: document.getElementById('widthInput'),
+      heightInput: document.getElementById('heightInput'),
+      keepAspect: document.getElementById('keepAspect'),
+      scaleMode: document.getElementById('scaleMode'),
+
+      thresholdRange: document.getElementById('thresholdRange'),
+      thresholdValue: document.getElementById('thresholdValue'),
+      brightnessRange: document.getElementById('brightnessRange'),
+      brightnessValue: document.getElementById('brightnessValue'),
+      contrastRange: document.getElementById('contrastRange'),
+      contrastValue: document.getElementById('contrastValue'),
+      ditherSelect: document.getElementById('ditherSelect'),
+      invertCheck: document.getElementById('invertCheck'),
+
+      rebuildBtn: document.getElementById('rebuildBtn'),
+      rebuildAllBtn: document.getElementById('rebuildAllBtn'),
+      downloadCurrentBtn: document.getElementById('downloadCurrentBtn'),
+      downloadAllBtn: document.getElementById('downloadAllBtn'),
+      clearBtn: document.getElementById('clearBtn')
+    };
+
+    function clamp(v, min, max) {
+      return Math.max(min, Math.min(max, v));
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+    }
+
+    function updateValueLabels() {
+      els.thresholdValue.textContent = els.thresholdRange.value;
+      els.brightnessValue.textContent = els.brightnessRange.value;
+      els.contrastValue.textContent = els.contrastRange.value;
+    }
+
+    function getSettings() {
+      return {
+        width: Math.max(1, parseInt(els.widthInput.value || '512', 10)),
+        height: Math.max(1, parseInt(els.heightInput.value || '512', 10)),
+        threshold: parseInt(els.thresholdRange.value, 10),
+        brightness: parseInt(els.brightnessRange.value, 10),
+        contrast: parseInt(els.contrastRange.value, 10),
+        dither: els.ditherSelect.value,
+        invert: els.invertCheck.checked,
+        scaleMode: els.scaleMode.value
+      };
+    }
+
+    function syncWorkspaceVisibility() {
+      const hasItems = state.items.length > 0 && state.activeIndex >= 0;
+      els.emptyState.classList.toggle('hidden', hasItems);
+      els.workspace.classList.toggle('hidden', !hasItems);
+    }
+
+    function createOffscreenCanvas(width, height) {
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      return canvas;
+    }
+
+    function drawScaledImageToCanvas(ctx, img, targetW, targetH, mode) {
+      ctx.clearRect(0, 0, targetW, targetH);
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, targetW, targetH);
+
+      if (mode === 'original') {
+        ctx.drawImage(img, 0, 0, img.naturalWidth, img.naturalHeight);
+        return;
+      }
+
+      if (mode === 'stretch') {
+        ctx.drawImage(img, 0, 0, targetW, targetH);
+        return;
+      }
+
+      const srcW = img.naturalWidth;
+      const srcH = img.naturalHeight;
+      const srcRatio = srcW / srcH;
+      const dstRatio = targetW / targetH;
+
+      let drawW, drawH, offsetX, offsetY;
+
+      if (mode === 'cover') {
+        if (srcRatio > dstRatio) {
+          drawH = targetH;
+          drawW = targetH * srcRatio;
+          offsetX = (targetW - drawW) / 2;
+          offsetY = 0;
+        } else {
+          drawW = targetW;
+          drawH = targetW / srcRatio;
+          offsetX = 0;
+          offsetY = (targetH - drawH) / 2;
+        }
+      } else {
+        if (srcRatio > dstRatio) {
+          drawW = targetW;
+          drawH = targetW / srcRatio;
+          offsetX = 0;
+          offsetY = (targetH - drawH) / 2;
+        } else {
+          drawH = targetH;
+          drawW = targetH * srcRatio;
+          offsetX = (targetW - drawW) / 2;
+          offsetY = 0;
+        }
+      }
+
+      ctx.drawImage(img, offsetX, offsetY, drawW, drawH);
+    }
+
+    function applyBrightnessContrast(value, brightness, contrast) {
+      const b = brightness * 255 / 100;
+      const c = contrast / 100;
+      const factor = (259 * (c * 255 + 255)) / (255 * (259 - c * 255));
+      return clamp(factor * (value - 128) + 128 + b, 0, 255);
+    }
+
+    function grayscaleImageData(imageData, brightness, contrast) {
+      const data = imageData.data;
+      const gray = new Float32Array(imageData.width * imageData.height);
+
+      for (let i = 0, p = 0; i < data.length; i += 4, p++) {
+        let r = data[i];
+        let g = data[i + 1];
+        let b = data[i + 2];
+        let lum = 0.299 * r + 0.587 * g + 0.114 * b;
+        lum = applyBrightnessContrast(lum, brightness, contrast);
+        gray[p] = lum;
+      }
+
+      return gray;
+    }
+
+    function applyThreshold(gray, width, height, threshold, invert) {
+      const out = new Uint8ClampedArray(width * height * 4);
+
+      for (let i = 0, p = 0; p < gray.length; p++, i += 4) {
+        let v = gray[p] < threshold ? 0 : 255;
+        if (invert) v = 255 - v;
+        out[i] = v;
+        out[i + 1] = v;
+        out[i + 2] = v;
+        out[i + 3] = 255;
+      }
+
+      return new ImageData(out, width, height);
+    }
+
+    function applyFloydSteinberg(grayInput, width, height, threshold, invert) {
+      const gray = new Float32Array(grayInput);
+      const out = new Uint8ClampedArray(width * height * 4);
+
+      const idx = (x, y) => y * width + x;
+
+      for (let y = 0; y < height; y++) {
+        for (let x = 0; x < width; x++) {
+          const i = idx(x, y);
+          const oldVal = gray[i];
+          const newVal = oldVal < threshold ? 0 : 255;
+          const err = oldVal - newVal;
+          gray[i] = newVal;
+
+          if (x + 1 < width) gray[idx(x + 1, y)] += err * 7 / 16;
+          if (x - 1 >= 0 && y + 1 < height) gray[idx(x - 1, y + 1)] += err * 3 / 16;
+          if (y + 1 < height) gray[idx(x, y + 1)] += err * 5 / 16;
+          if (x + 1 < width && y + 1 < height) gray[idx(x + 1, y + 1)] += err * 1 / 16;
+        }
+      }
+
+      for (let p = 0, i = 0; p < gray.length; p++, i += 4) {
+        let v = gray[p] < threshold ? 0 : 255;
+        if (invert) v = 255 - v;
+        out[i] = v;
+        out[i + 1] = v;
+        out[i + 2] = v;
+        out[i + 3] = 255;
+      }
+
+      return new ImageData(out, width, height);
+    }
+
+    function formatBytes(bytes) {
+      if (bytes < 1024) return `${bytes} B`;
+      if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+      return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
+    }
+
+    function ensureSettingsFromActive() {
+      const item = state.items[state.activeIndex];
+      if (!item) return;
+
+      if (item.settings) {
+        els.widthInput.value = item.settings.width;
+        els.heightInput.value = item.settings.height;
+        els.thresholdRange.value = item.settings.threshold;
+        els.brightnessRange.value = item.settings.brightness;
+        els.contrastRange.value = item.settings.contrast;
+        els.ditherSelect.value = item.settings.dither;
+        els.invertCheck.checked = item.settings.invert;
+        els.scaleMode.value = item.settings.scaleMode;
+        updateValueLabels();
+      }
+    }
+
+    function collectCurrentSettingsToItem(item) {
+      item.settings = getSettings();
+    }
+
+    function renderTabs() {
+      els.tabs.innerHTML = '';
+
+      state.items.forEach((item, index) => {
+        const btn = document.createElement('button');
+        btn.className = `tab ${index === state.activeIndex ? 'active' : ''}`;
+        btn.type = 'button';
+        btn.title = item.name;
+        btn.textContent = item.name;
+        btn.addEventListener('click', () => {
+          state.activeIndex = index;
+          ensureSettingsFromActive();
+          renderTabs();
+          renderActive();
+        });
+        els.tabs.appendChild(btn);
+      });
+    }
+
+    async function loadImageFromFile(file) {
+      const dataUrl = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+
+      const img = await new Promise((resolve, reject) => {
+        const image = new Image();
+        image.onload = () => resolve(image);
+        image.onerror = reject;
+        image.src = dataUrl;
+      });
+
+      return { img, dataUrl };
+    }
+
+    async function addFiles(fileList) {
+      const files = Array.from(fileList).filter(file => file.type.startsWith('image/'));
+      if (!files.length) return;
+
+      for (const file of files) {
+        const { img, dataUrl } = await loadImageFromFile(file);
+
+        const defaultSettings = {
+          width: img.naturalWidth,
+          height: img.naturalHeight,
+          threshold: parseInt(els.thresholdRange.value, 10),
+          brightness: parseInt(els.brightnessRange.value, 10),
+          contrast: parseInt(els.contrastRange.value, 10),
+          dither: els.ditherSelect.value,
+          invert: els.invertCheck.checked,
+          scaleMode: els.scaleMode.value
+        };
+
+        const item = {
+          id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now() + Math.random()),
+          name: file.name,
+          file,
+          img,
+          dataUrl,
+          settings: defaultSettings,
+          resultDataUrl: '',
+          resultBlob: null,
+          outputWidth: img.naturalWidth,
+          outputHeight: img.naturalHeight
+        };
+
+        state.items.push(item);
+      }
+
+      if (state.activeIndex === -1 && state.items.length > 0) {
+        state.activeIndex = 0;
+      }
+
+      ensureSettingsFromActive();
+      renderTabs();
+      syncWorkspaceVisibility();
+      await rebuildAll(false);
+      renderActive();
+      els.fileInput.value = '';
+    }
+
+    function drawSourcePreview(item) {
+      const settings = getSettings();
+      const sourceCanvas = els.sourceCanvas;
+      const sourceCtx = sourceCanvas.getContext('2d', { willReadFrequently: true });
+
+      let w = settings.width;
+      let h = settings.height;
+
+      if (settings.scaleMode === 'original') {
+        w = item.img.naturalWidth;
+        h = item.img.naturalHeight;
+      }
+
+      sourceCanvas.width = w;
+      sourceCanvas.height = h;
+      drawScaledImageToCanvas(sourceCtx, item.img, w, h, settings.scaleMode);
+
+      els.sourceMeta.innerHTML = `
+        <div>Файл: ${escapeHtml(item.name)}</div>
+        <div>Исходный размер: ${item.img.naturalWidth} × ${item.img.naturalHeight}px</div>
+        <div>Размер файла: ${formatBytes(item.file.size)}</div>
+      `;
+    }
+
+    async function rebuildItem(item, useCurrentPanelSettings = true) {
+      if (useCurrentPanelSettings) {
+        collectCurrentSettingsToItem(item);
+      }
+
+      const settings = item.settings;
+      let w = settings.width;
+      let h = settings.height;
+
+      if (settings.scaleMode === 'original') {
+        w = item.img.naturalWidth;
+        h = item.img.naturalHeight;
+      }
+
+      item.outputWidth = w;
+      item.outputHeight = h;
+
+      const workCanvas = createOffscreenCanvas(w, h);
+      const workCtx = workCanvas.getContext('2d', { willReadFrequently: true });
+
+      drawScaledImageToCanvas(workCtx, item.img, w, h, settings.scaleMode);
+
+      const imgData = workCtx.getImageData(0, 0, w, h);
+      const gray = grayscaleImageData(imgData, settings.brightness, settings.contrast);
+
+      let outImageData;
+      if (settings.dither === 'threshold') {
+        outImageData = applyThreshold(gray, w, h, settings.threshold, settings.invert);
+      } else {
+        outImageData = applyFloydSteinberg(gray, w, h, settings.threshold, settings.invert);
+      }
+
+      workCtx.putImageData(outImageData, 0, 0);
+
+      const blob = await new Promise(resolve => workCanvas.toBlob(resolve, 'image/png'));
+      const dataUrl = workCanvas.toDataURL('image/png');
+
+      item.resultBlob = blob;
+      item.resultDataUrl = dataUrl;
+    }
+
+    async function rebuildCurrent() {
+      const item = state.items[state.activeIndex];
+      if (!item) return;
+      await rebuildItem(item, true);
+      renderActive();
+      renderTabs();
+    }
+
+    async function rebuildAll(syncFromPanel = true) {
+      if (!state.items.length) return;
+
+      const activeItem = state.items[state.activeIndex];
+      const activeSettings = activeItem ? getSettings() : null;
+
+      for (const item of state.items) {
+        if (syncFromPanel) {
+          item.settings = { ...activeSettings };
+        }
+        await rebuildItem(item, false);
+      }
+    }
+
+    function renderResult(item) {
+      if (!item) return;
+
+      const img = new Image();
+      img.onload = () => {
+        els.resultCanvas.width = img.width;
+        els.resultCanvas.height = img.height;
+        const ctx = els.resultCanvas.getContext('2d');
+        ctx.clearRect(0, 0, img.width, img.height);
+        ctx.drawImage(img, 0, 0);
+      };
+      img.src = item.resultDataUrl;
+
+      els.resultMeta.innerHTML = `
+        <div>Результат: ${item.outputWidth} × ${item.outputHeight}px</div>
+        <div>Алгоритм: ${item.settings.dither === 'floyd' ? 'Floyd-Steinberg' : 'Простой порог'}</div>
+        <div>Порог: ${item.settings.threshold}, яркость: ${item.settings.brightness}, контраст: ${item.settings.contrast}</div>
+        <div>Клик по изображению скачивает: ${escapeHtml(getDownloadName(item.name))}</div>
+      `;
+    }
+
+    function renderActive() {
+      syncWorkspaceVisibility();
+      const item = state.items[state.activeIndex];
+      if (!item) return;
+
+      drawSourcePreview(item);
+
+      if (!item.resultDataUrl) {
+        rebuildItem(item, true).then(() => renderResult(item));
+      } else {
+        renderResult(item);
+      }
+    }
+
+    function getDownloadName(filename) {
+      const dotIndex = filename.lastIndexOf('.');
+      const base = dotIndex > 0 ? filename.slice(0, dotIndex) : filename;
+      return `${base}_mono.png`;
+    }
+
+    function downloadBlob(blob, filename) {
+      if (!blob) return;
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+
+    function downloadCurrent() {
+      const item = state.items[state.activeIndex];
+      if (!item || !item.resultBlob) return;
+      downloadBlob(item.resultBlob, getDownloadName(item.name));
+    }
+
+    async function downloadAllSequentially() {
+      for (const item of state.items) {
+        if (!item.resultBlob) {
+          await rebuildItem(item, false);
+        }
+        downloadBlob(item.resultBlob, getDownloadName(item.name));
+        await new Promise(resolve => setTimeout(resolve, 180));
+      }
+    }
+
+    function clearAll() {
+      state.items = [];
+      state.activeIndex = -1;
+      els.tabs.innerHTML = '';
+      els.sourceMeta.innerHTML = '';
+      els.resultMeta.innerHTML = '';
+      const sctx = els.sourceCanvas.getContext('2d');
+      const rctx = els.resultCanvas.getContext('2d');
+      els.sourceCanvas.width = 1;
+      els.sourceCanvas.height = 1;
+      els.resultCanvas.width = 1;
+      els.resultCanvas.height = 1;
+      sctx.clearRect(0, 0, 1, 1);
+      rctx.clearRect(0, 0, 1, 1);
+      syncWorkspaceVisibility();
+    }
+
+    function setupPageDragAndDrop() {
+      const preventDefaults = e => {
+        e.preventDefault();
+        e.stopPropagation();
+      };
+
+      ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        window.addEventListener(eventName, preventDefaults, false);
+      });
+
+      window.addEventListener('dragenter', () => {
+        document.body.classList.add('dragover-page');
+        els.dropzone.classList.add('active');
+      });
+
+      window.addEventListener('dragover', () => {
+        document.body.classList.add('dragover-page');
+        els.dropzone.classList.add('active');
+      });
+
+      window.addEventListener('dragleave', e => {
+        if (e.target === document.documentElement || e.target === document.body) {
+          document.body.classList.remove('dragover-page');
+          els.dropzone.classList.remove('active');
+        }
+      });
+
+      window.addEventListener('drop', async e => {
+        document.body.classList.remove('dragover-page');
+        els.dropzone.classList.remove('active');
+        const files = e.dataTransfer?.files;
+        if (files?.length) {
+          await addFiles(files);
+        }
+      });
+
+      els.dropzone.addEventListener('dragenter', () => els.dropzone.classList.add('active'));
+      els.dropzone.addEventListener('dragover', () => els.dropzone.classList.add('active'));
+      els.dropzone.addEventListener('dragleave', () => els.dropzone.classList.remove('active'));
+      els.dropzone.addEventListener('drop', () => els.dropzone.classList.remove('active'));
+    }
+
+    function setupAspectRatioLink() {
+      let lastManualWidth = parseInt(els.widthInput.value, 10);
+      let lastManualHeight = parseInt(els.heightInput.value, 10);
+
+      els.widthInput.addEventListener('input', () => {
+        const item = state.items[state.activeIndex];
+        if (!item) return;
+
+        const newWidth = Math.max(1, parseInt(els.widthInput.value || '1', 10));
+
+        if (els.keepAspect.checked) {
+          const ratio = item.img.naturalHeight / item.img.naturalWidth;
+          els.heightInput.value = Math.max(1, Math.round(newWidth * ratio));
+        }
+
+        lastManualWidth = newWidth;
+        lastManualHeight = parseInt(els.heightInput.value, 10);
+      });
+
+      els.heightInput.addEventListener('input', () => {
+        const item = state.items[state.activeIndex];
+        if (!item) return;
+
+        const newHeight = Math.max(1, parseInt(els.heightInput.value || '1', 10));
+
+        if (els.keepAspect.checked) {
+          const ratio = item.img.naturalWidth / item.img.naturalHeight;
+          els.widthInput.value = Math.max(1, Math.round(newHeight * ratio));
+        }
+
+        lastManualHeight = newHeight;
+        lastManualWidth = parseInt(els.widthInput.value, 10);
+      });
+    }
+
+    function bindEvents() {
+      els.fileInput.addEventListener('change', async e => {
+        await addFiles(e.target.files);
+      });
+
+      els.thresholdRange.addEventListener('input', updateValueLabels);
+      els.brightnessRange.addEventListener('input', updateValueLabels);
+      els.contrastRange.addEventListener('input', updateValueLabels);
+
+      els.rebuildBtn.addEventListener('click', rebuildCurrent);
+
+      els.rebuildAllBtn.addEventListener('click', async () => {
+        await rebuildAll(true);
+        renderActive();
+      });
+
+      els.downloadCurrentBtn.addEventListener('click', downloadCurrent);
+      els.downloadAllBtn.addEventListener('click', downloadAllSequentially);
+      els.clearBtn.addEventListener('click', clearAll);
+
+      els.resultCanvas.addEventListener('click', downloadCurrent);
+    }
+
+    function init() {
+      updateValueLabels();
+      syncWorkspaceVisibility();
+      setupPageDragAndDrop();
+      setupAspectRatioLink();
+      bindEvents();
+    }
+
+    init();
+  </script>
+</body>
+</html>
