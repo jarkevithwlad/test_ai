@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DepthFlow Parallax</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #080a0e;
+    --surface: #0e1117;
+    --border: #1e2535;
+    --accent: #3bf0c0;
+    --accent2: #7b4fff;
+    --text: #c8d6e8;
+    --muted: #4a5568;
+    --radius: 12px;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 32px 20px 48px;
+    overflow:hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(59,240,192,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(59,240,192,0.03) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  header { position: relative; z-index: 1; text-align: center; margin-bottom: 36px; }
+
+  .logo { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 8px; }
+  .logo-wave { font-size: 2rem; animation: wave 3s ease-in-out infinite; }
+  @keyframes wave { 0%,100%{transform:rotate(-10deg)} 50%{transform:rotate(10deg)} }
+
+  h1 {
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .subtitle {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--muted);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-top: 6px;
+  }
+
+  .main-layout { position: relative; z-index: 1; width: 100%; max-width: 1000px; display: flex; flex-direction: column; gap: 20px; }
+
+  .canvas-wrap {
+    position: relative; width: 100%; aspect-ratio: 16/9;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); overflow: hidden;
+    box-shadow: 0 0 60px rgba(59,240,192,0.06), 0 20px 60px rgba(0,0,0,0.5);
+  }
+  #glCanvas { width: 100%; height: 100%; display: block; cursor: none; }
+
+  .canvas-overlay {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 16px;
+    background: rgba(8,10,14,0.85); backdrop-filter: blur(8px);
+    transition: opacity 0.4s ease; pointer-events: none;
+  }
+  .canvas-overlay.hidden { opacity: 0; }
+  .drop-icon { font-size: 3.5rem; opacity: 0.4; }
+  .overlay-text { font-size: 1rem; color: var(--muted); text-align: center; line-height: 1.6; }
+  .overlay-text strong { color: var(--text); display: block; font-size: 1.1rem; margin-bottom: 4px; }
+
+  .status-badge {
+    position: absolute; top: 14px; right: 14px;
+    font-family: 'Space Mono', monospace; font-size: 0.68rem;
+    padding: 4px 10px; border-radius: 20px;
+    background: rgba(8,10,14,0.7); border: 1px solid var(--border);
+    color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; transition: all 0.3s;
+  }
+  .status-badge.active { color: var(--accent); border-color: rgba(59,240,192,0.3); box-shadow: 0 0 12px rgba(59,240,192,0.15); }
+
+  .cursor-dot {
+    position: absolute; width: 10px; height: 10px; background: var(--accent);
+    border-radius: 50%; pointer-events: none; transform: translate(-50%,-50%);
+    box-shadow: 0 0 16px rgba(59,240,192,0.7); display: none;
+  }
+  .canvas-wrap:hover .cursor-dot { display: block; }
+
+  .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width:600px) { .controls { grid-template-columns: 1fr; } }
+
+  .upload-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 16px 20px; display: flex; align-items: center; gap: 14px;
+    cursor: pointer; transition: border-color .2s, box-shadow .2s, transform .15s;
+    position: relative; overflow: hidden;
+  }
+  .upload-card::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(135deg, transparent, rgba(59,240,192,0.03));
+    opacity: 0; transition: opacity .2s;
+  }
+  .upload-card:hover { border-color: rgba(59,240,192,0.4); box-shadow: 0 0 20px rgba(59,240,192,0.08); transform: translateY(-1px); }
+  .upload-card:hover::before { opacity: 1; }
+  .upload-card.depth-card:hover { border-color: rgba(123,79,255,0.4); box-shadow: 0 0 20px rgba(123,79,255,0.08); }
+
+  .upload-icon {
+    width: 44px; height: 44px; border-radius: 10px;
+    background: rgba(59,240,192,0.08); border: 1px solid rgba(59,240,192,0.2);
+    display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0;
+  }
+  .depth-card .upload-icon { background: rgba(123,79,255,0.08); border-color: rgba(123,79,255,0.2); }
+  .upload-info { flex: 1; min-width: 0; }
+  .upload-label { font-size: 0.82rem; font-family: 'Space Mono', monospace; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 2px; }
+  .upload-name { font-size: 0.95rem; font-weight: 700; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .upload-name.placeholder { color: var(--muted); font-weight: 400; }
+  input[type="file"] { display: none; }
+
+  .sliders-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; }
+  @media (max-width:700px) { .sliders-row { grid-template-columns: repeat(2,1fr); } }
+  @media (max-width:400px) { .sliders-row { grid-template-columns: 1fr; } }
+
+  .slider-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; }
+  .slider-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .slider-name { font-size: 0.72rem; font-family: 'Space Mono', monospace; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; }
+  .slider-val { font-size: 0.78rem; font-family: 'Space Mono', monospace; color: var(--accent); }
+
+  input[type="range"] { -webkit-appearance: none; width: 100%; height: 3px; background: var(--border); border-radius: 2px; outline: none; cursor: pointer; }
+  input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 8px rgba(59,240,192,0.5); cursor: pointer; transition: transform .15s; }
+  input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.3); }
+
+  .info-bar {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 12px 18px; display: flex; align-items: center; gap: 10px;
+    font-family: 'Space Mono', monospace; font-size: 0.72rem; color: var(--muted); flex-wrap: wrap;
+  }
+  .info-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex-shrink: 0; box-shadow: 0 0 6px var(--accent); }
+</style>
+
+<style id="chatgpt-added-features">
+.hide-ui header,
+.hide-ui .controls,
+.hide-ui .sliders-row,
+.hide-ui .info-bar,
+.hide-ui .status-badge{
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .4s ease;
+}
+.fullscreen-btn{
+  position:absolute;left:14px;top:14px;z-index:5;
+  padding:6px 10px;border:1px solid #1e2535;border-radius:8px;
+  background:rgba(8,10,14,.7);color:#c8d6e8;cursor:pointer;
+}
+</style>
+
+
+<style id="fullscreen-overlay-ui">
+body.fullscreen-mode .main-layout{
+  max-width:none;
+  width:100vw;
+  height:100vh;
+}
+body.fullscreen-mode .canvas-wrap{
+  position:fixed !important;
+  inset:0 !important;
+  width:100vw !important;
+  height:100vh !important;
+  aspect-ratio:auto !important;
+  border-radius:0 !important;
+  z-index:1000;
+}
+body.fullscreen-mode .controls,
+body.fullscreen-mode .sliders-row,
+body.fullscreen-mode .info-bar{
+  position:fixed;
+  left:16px;
+  right:16px;
+  z-index:1001;
+  background:rgba(10,10,15,.28);
+  backdrop-filter:blur(8px);
+  border-radius:12px;
+}
+body.fullscreen-mode .controls{bottom:120px;}
+body.fullscreen-mode .sliders-row{bottom:56px;}
+body.fullscreen-mode .info-bar{top:16px;}
+</style>
+
+
+<style id="fix-overlap">
+body.fullscreen-mode .controls{
+ bottom:16px !important;
+ left:16px !important;
+ right:auto !important;
+ width:min(420px,calc(100vw - 32px));
+}
+body.fullscreen-mode .sliders-row{
+ top:16px !important;
+ bottom:auto !important;
+ left:16px !important;
+ right:16px !important;
+}
+body.fullscreen-mode .info-bar{
+ display:none !important;
+}
+</style>
+
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <span class="logo-wave">&#x1F30A;</span>
+    <h1>DepthFlow</h1>
+  </div>
+  <p class="subtitle">WebGL2 Parallax Shader &middot; Camera Rotation &middot; Cursor Driven</p>
+</header>
+
+<div class="main-layout">
+
+  <div class="canvas-wrap" id="canvasWrap">
+    <button class="fullscreen-btn" id="fullscreenBtn">⛶ Fullscreen</button>
+    <canvas id="glCanvas"></canvas>
+    <div class="canvas-overlay" id="overlay">
+      <div class="drop-icon">&#x1F3D4;&#xFE0F;</div>
+      <div class="overlay-text">
+        <strong>&#x417;&#x430;&#x433;&#x440;&#x443;&#x437;&#x438;&#x442;&#x435; &#x438;&#x437;&#x43E;&#x431;&#x440;&#x430;&#x436;&#x435;&#x43D;&#x438;&#x435; &#x438; &#x43A;&#x430;&#x440;&#x442;&#x443; &#x433;&#x43B;&#x443;&#x431;&#x438;&#x43D;&#x44B;</strong>
+        &#x418;&#x441;&#x43F;&#x43E;&#x43B;&#x44C;&#x437;&#x443;&#x439;&#x442;&#x435; &#x43A;&#x43D;&#x43E;&#x43F;&#x43A;&#x438; &#x43D;&#x438;&#x436;&#x435; &#x438;&#x43B;&#x438; &#x43F;&#x435;&#x440;&#x435;&#x442;&#x430;&#x449;&#x438;&#x442;&#x435; &#x444;&#x430;&#x439;&#x43B;&#x44B; &#x441;&#x44E;&#x434;&#x430;
+      </div>
+    </div>
+    <div class="status-badge" id="statusBadge">&#x41E;&#x436;&#x438;&#x434;&#x430;&#x43D;&#x438;&#x435;</div>
+    <div class="cursor-dot" id="cursorDot"></div>
+  </div>
+
+  <div class="controls">
+    <label class="upload-card" for="imgInput">
+      <div class="upload-icon">&#x1F5BC;&#xFE0F;</div>
+      <div class="upload-info">
+        <div class="upload-label">&#x418;&#x437;&#x43E;&#x431;&#x440;&#x430;&#x436;&#x435;&#x43D;&#x438;&#x435;</div>
+        <div class="upload-name placeholder" id="imgName">&#x41D;&#x430;&#x436;&#x43C;&#x438;&#x442;&#x435; &#x434;&#x43B;&#x44F; &#x437;&#x430;&#x433;&#x440;&#x443;&#x437;&#x43A;&#x438;</div>
+      </div>
+      <input type="file" id="imgInput" accept="image/*">
+    </label>
+    <label class="upload-card depth-card" for="depthInput">
+      <div class="upload-icon">&#x1F5FA;&#xFE0F;</div>
+      <div class="upload-info">
+        <div class="upload-label">&#x41A;&#x430;&#x440;&#x442;&#x430; &#x433;&#x43B;&#x443;&#x431;&#x438;&#x43D;&#x44B;</div>
+        <div class="upload-name placeholder" id="depthName">&#x41D;&#x430;&#x436;&#x43C;&#x438;&#x442;&#x435; &#x434;&#x43B;&#x44F; &#x437;&#x430;&#x433;&#x440;&#x443;&#x437;&#x43A;&#x438;</div>
+      </div>
+      <input type="file" id="depthInput" accept="image/*">
+    </label>
+  </div>
+
+  <div class="sliders-row">
+    <div class="slider-card">
+      <div class="slider-header"><span class="slider-name">&#x421;&#x438;&#x43B;&#x430;</span><span class="slider-val" id="strengthVal">0.35</span></div>
+      <input type="range" id="strength" min="0.0" max="1.0" step="0.01" value="0.35">
+    </div>
+    <div class="slider-card">
+      <div class="slider-header"><span class="slider-name">Zoom</span><span class="slider-val" id="zoomVal">1.00</span></div>
+      <input type="range" id="zoom" min="1.0" max="2.0" step="0.01" value="1.0">
+    </div>
+    <div class="slider-card">
+      <div class="slider-header"><span class="slider-name">&#x418;&#x437;&#x43E;&#x43C;&#x435;&#x442;&#x440;&#x438;&#x44F;</span><span class="slider-val" id="isoVal">0.00</span></div>
+      <input type="range" id="isometric" min="0.0" max="1.0" step="0.01" value="0.0">
+    </div>
+    <div class="slider-card">
+      <div class="slider-header"><span class="slider-name">&#x424;&#x43E;&#x43A;&#x443;&#x441;</span><span class="slider-val" id="focusVal">0.50</span></div>
+      <input type="range" id="focus" min="0.0" max="1.0" step="0.01" value="0.5">
+    </div>
+  </div>
+
+  <div class="info-bar">
+    <div class="info-dot"></div>
+    &#x41A;&#x443;&#x440;&#x441;&#x43E;&#x440; &mdash; &#x432;&#x440;&#x430;&#x449;&#x435;&#x43D;&#x438;&#x435; &#x43A;&#x430;&#x43C;&#x435;&#x440;&#x44B; &#x432;&#x43E;&#x43A;&#x440;&#x443;&#x433; &#x43F;&#x438;&#x432;&#x43E;&#x442;&#x430; (&#x444;&#x43E;&#x43A;&#x443;&#x441;) &nbsp;&middot;&nbsp;
+    &#x418;&#x437;&#x43E;&#x43C;&#x435;&#x442;&#x440;&#x438;&#x44F; 0=&#x43F;&#x435;&#x440;&#x441;&#x43F;&#x435;&#x43A;&#x442;&#x438;&#x432;&#x430;, 1=&#x43F;&#x430;&#x440;&#x430;&#x43B;&#x43B;&#x435;&#x43B;&#x44C;&#x43D;&#x44B;&#x435; &#x43B;&#x443;&#x447;&#x438; &nbsp;&middot;&nbsp;
+    &#x411;&#x435;&#x43B;&#x44B;&#x439;=&#x434;&#x430;&#x43B;&#x435;&#x43A;&#x43E;, &#x447;&#x451;&#x440;&#x43D;&#x44B;&#x439;=&#x431;&#x43B;&#x438;&#x437;&#x43A;&#x43E;
+  </div>
+
+</div>
+
+<script>
+const canvas = document.getElementById('glCanvas');
+const wrap   = document.getElementById('canvasWrap');
+
+function resizeCanvas() {
+  var dpr = window.devicePixelRatio || 1;
+  var w = Math.round(wrap.clientWidth  * dpr);
+  var h = Math.round(wrap.clientHeight * dpr);
+  if (canvas.width !== w || canvas.height !== h) {
+    canvas.width  = w;
+    canvas.height = h;
+  }
+}
+
+var gl = canvas.getContext('webgl2', { antialias: true });
+if (!gl) alert('WebGL2 not supported');
+
+var VS = [
+  '#version 300 es',
+  'precision highp float;',
+  'in  vec2 a_pos;',
+  'out vec2 v_uv;',
+  'void main() {',
+  '  v_uv = vec2(a_pos.x * 0.5 + 0.5, 0.5 - a_pos.y * 0.5);',
+  '  gl_Position = vec4(a_pos, 0.0, 1.0);',
+  '}'
+].join('\n');
+
+var FS = [
+  '#version 300 es',
+  'precision highp float;',
+  'in  vec2 v_uv;',
+  'out vec4 fragColor;',
+  'uniform sampler2D u_image;',
+  'uniform sampler2D u_depth;',
+  'uniform vec2  u_offset;',
+  'uniform float u_strength;',
+  'uniform float u_zoom;',
+  'uniform float u_isometric;',
+  'uniform float u_focus;',
+  'uniform float u_aspect;',
+  '',
+  'vec2 coverUV(vec2 uv) {',
+  '  vec2 c = uv - 0.5;',
+  '  c /= u_zoom;',
+  '  return c + 0.5;',
+  '}',
+  '',
+  // DepthFlow camera model:
+  // Camera at height H looks at the image plane.
+  // Pivot depth = u_focus: that depth layer stays still.
+  // Ray delta = cam * (d - focus)          -- perspective (rotation around pivot)
+  // Blended with cam * d                   -- isometric (pure translation)
+  // mix(persp, isoT, u_isometric)
+  'vec2 depthflowTrace(vec2 origin, vec2 cam) {',
+  '  const int   STEPS  = 48;',
+  '  const float BSTEPS = 10.0;',
+  '  float stepSz = 1.0 / float(STEPS);',
+  '  float prevD  = 0.0;',
+  '',
+  '  for (int i = 1; i <= STEPS; i++) {',
+  '    float d = float(i) * stepSz;',
+  '',
+  '    vec2 persp = cam * (d - u_focus);',
+  '    vec2 isoT  = cam * d;',
+  '    vec2 delta = mix(persp, isoT, u_isometric);',
+  '    vec2 testUV = clamp(origin + delta, 0.001, 0.999);',
+  '',
+  '    float surf = texture(u_depth, testUV).r;',
+  '',
+  '    if (d >= surf) {',
+  '      float lo = prevD;',
+  '      float hi = d;',
+  '      for (float b = 0.0; b < BSTEPS; b++) {',
+  '        float mid = (lo + hi) * 0.5;',
+  '        vec2 mPersp = cam * (mid - u_focus);',
+  '        vec2 mIsoT  = cam * mid;',
+  '        vec2 mDelta = mix(mPersp, mIsoT, u_isometric);',
+  '        vec2 mUV    = clamp(origin + mDelta, 0.001, 0.999);',
+  '        float mSurf = texture(u_depth, mUV).r;',
+  '        if (mid >= mSurf) hi = mid; else lo = mid;',
+  '      }',
+  '      float ref = (lo + hi) * 0.5;',
+  '      vec2 rPersp = cam * (ref - u_focus);',
+  '      vec2 rIsoT  = cam * ref;',
+  '      vec2 rDelta = mix(rPersp, rIsoT, u_isometric);',
+  '      return clamp(origin + rDelta, 0.001, 0.999);',
+  '    }',
+  '    prevD = d;',
+  '  }',
+  '  vec2 mxPersp = cam * (1.0 - u_focus);',
+  '  vec2 mxIsoT  = cam * 1.0;',
+  '  vec2 mxDelta = mix(mxPersp, mxIsoT, u_isometric);',
+  '  return clamp(origin + mxDelta, 0.001, 0.999);',
+  '}',
+  '',
+  'void main() {',
+  '  vec2 uv  = coverUV(v_uv);',
+  '  vec2 cam = u_offset * u_strength;',
+  '  cam.x   *= u_aspect;',
+  '  vec2 finalUV = depthflowTrace(uv, cam);',
+  '  vec4 color   = texture(u_image, finalUV);',
+  '  vec2 edge    = abs(finalUV - 0.5) * 2.0;',
+  '  float vign   = 1.0 - smoothstep(0.90, 1.0, max(edge.x, edge.y));',
+  '  color.rgb   *= vign;',
+  '  fragColor    = color;',
+  '}'
+].join('\n');
+
+function compileShader(src, type) {
+  var s = gl.createShader(type);
+  gl.shaderSource(s, src);
+  gl.compileShader(s);
+  if (!gl.getShaderParameter(s, gl.COMPILE_STATUS))
+    console.error(gl.getShaderInfoLog(s));
+  return s;
+}
+
+var prog = gl.createProgram();
+gl.attachShader(prog, compileShader(VS, gl.VERTEX_SHADER));
+gl.attachShader(prog, compileShader(FS, gl.FRAGMENT_SHADER));
+gl.linkProgram(prog);
+if (!gl.getProgramParameter(prog, gl.LINK_STATUS))
+  console.error(gl.getProgramInfoLog(prog));
+gl.useProgram(prog);
+
+var buf = gl.createBuffer();
+gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+  -1,-1,  1,-1, -1, 1,
+   1,-1,  1, 1, -1, 1
+]), gl.STATIC_DRAW);
+
+var aPos = gl.getAttribLocation(prog, 'a_pos');
+gl.enableVertexAttribArray(aPos);
+gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
+
+var U = {
+  offset:    gl.getUniformLocation(prog, 'u_offset'),
+  strength:  gl.getUniformLocation(prog, 'u_strength'),
+  zoom:      gl.getUniformLocation(prog, 'u_zoom'),
+  isometric: gl.getUniformLocation(prog, 'u_isometric'),
+  focus:     gl.getUniformLocation(prog, 'u_focus'),
+  aspect:    gl.getUniformLocation(prog, 'u_aspect'),
+  image:     gl.getUniformLocation(prog, 'u_image'),
+  depth:     gl.getUniformLocation(prog, 'u_depth')
+};
+gl.uniform1i(U.image, 0);
+gl.uniform1i(U.depth, 1);
+
+function makeTexture(img) {
+  var tex = gl.createTexture();
+  gl.bindTexture(gl.TEXTURE_2D, tex);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+  return tex;
+}
+
+function makePlaceholder(r, g, b) {
+  var tex = gl.createTexture();
+  gl.bindTexture(gl.TEXTURE_2D, tex);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE,
+    new Uint8Array([r, g, b, 255]));
+  return tex;
+}
+
+var texImage = makePlaceholder(30, 35, 45);
+var texDepth = makePlaceholder(128, 128, 128);
+
+var state = {
+  mouse:     { x: 0, y: 0 },
+  target:    { x: 0, y: 0 },
+  strength:  0.35,
+  zoom:      1.0,
+  isometric: 0.0,
+  focus:     0.5,
+  hasImage:  false,
+  hasDepth:  false
+};
+
+var cursorDot = document.getElementById('cursorDot');
+
+wrap.addEventListener('mousemove', function(e) {
+  var rect = wrap.getBoundingClientRect();
+  state.target.x =  ((e.clientX - rect.left) / rect.width  - 0.5) * 2.0;
+  state.target.y = -((e.clientY - rect.top)  / rect.height - 0.5) * 2.0;
+  cursorDot.style.left = (e.clientX - rect.left) + 'px';
+  cursorDot.style.top  = (e.clientY - rect.top)  + 'px';
+});
+wrap.addEventListener('mouseleave', function() {
+  state.target.x = 0;
+  state.target.y = 0;
+});
+
+function bindSlider(id, valId, key, dp) {
+  document.getElementById(id).addEventListener('input', function() {
+    state[key] = parseFloat(this.value);
+    document.getElementById(valId).textContent = state[key].toFixed(dp);
+  });
+}
+bindSlider('strength',  'strengthVal', 'strength',  2);
+bindSlider('zoom',      'zoomVal',     'zoom',       2);
+bindSlider('isometric', 'isoVal',      'isometric',  2);
+bindSlider('focus',     'focusVal',    'focus',      2);
+
+function loadFile(file, slot) {
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var img = new Image();
+    img.onload = function() {
+      if (slot === 'image') {
+        texImage = makeTexture(img);
+        state.hasImage = true;
+        document.getElementById('imgName').textContent = file.name;
+        document.getElementById('imgName').classList.remove('placeholder');
+      } else {
+        texDepth = makeTexture(img);
+        state.hasDepth = true;
+        document.getElementById('depthName').textContent = file.name;
+        document.getElementById('depthName').classList.remove('placeholder');
+      }
+      updateOverlay();
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+document.getElementById('imgInput').addEventListener('change', function() {
+  if (this.files[0]) loadFile(this.files[0], 'image');
+});
+document.getElementById('depthInput').addEventListener('change', function() {
+  if (this.files[0]) loadFile(this.files[0], 'depth');
+});
+
+wrap.addEventListener('dragover', function(e) { e.preventDefault(); });
+wrap.addEventListener('drop', function(e) {
+  e.preventDefault();
+  var files = Array.from(e.dataTransfer.files).filter(function(f) { return f.type.indexOf('image/') === 0; });
+  if (files[0]) loadFile(files[0], state.hasImage ? 'depth' : 'image');
+  if (files[1]) loadFile(files[1], 'depth');
+});
+
+function updateOverlay() {
+  var overlay = document.getElementById('overlay');
+  var badge   = document.getElementById('statusBadge');
+  if (state.hasImage && state.hasDepth) {
+    overlay.classList.add('hidden');
+    badge.textContent = '\u25CF \u0410\u043a\u0442\u0438\u0432\u0435\u043d';
+    badge.classList.add('active');
+  } else if (state.hasImage) {
+    overlay.querySelector('.overlay-text').innerHTML =
+      '<strong>\u0422\u0435\u043f\u0435\u0440\u044c \u0437\u0430\u0433\u0440\u0443\u0437\u0438\u0442\u0435 \u043a\u0430\u0440\u0442\u0443 \u0433\u043b\u0443\u0431\u0438\u043d\u044b</strong>\u0418\u0441\u043f\u043e\u043b\u044c\u0437\u0443\u0439\u0442\u0435 \u043a\u043d\u043e\u043f\u043a\u0443 \u00ab\u041a\u0430\u0440\u0442\u0430 \u0433\u043b\u0443\u0431\u0438\u043d\u044b\u00bb';
+    badge.textContent = '\u041d\u0435\u0442 depth map';
+  }
+}
+
+
+// ===== Added: gyro + fullscreen + auto-hide UI =====
+state.gyro = {x:0,y:0};
+state.useGyro = false;
+
+function clamp(v,min,max){ return Math.max(min, Math.min(max,v)); }
+
+async function enableGyro(){
+  try{
+    if(typeof DeviceOrientationEvent!=="undefined" &&
+       typeof DeviceOrientationEvent.requestPermission==="function"){
+      const p = await DeviceOrientationEvent.requestPermission();
+      if(p!=="granted") return;
+    }
+    state.useGyro = true;
+  }catch(e){}
+}
+
+window.addEventListener("deviceorientation", function(e){
+  if(e.beta==null || e.gamma==null) return;
+  state.gyro.x = clamp(e.gamma / 30, -1, 1);
+  state.gyro.y = clamp(e.beta / 30, -1, 1);
+});
+
+const fsBtn = document.getElementById("fullscreenBtn");
+fsBtn.addEventListener("click", async ()=>{
+  await enableGyro();
+  const el = document.documentElement;
+  if(!document.fullscreenElement){
+    el.requestFullscreen && el.requestFullscreen();
+  }else{
+    document.exitFullscreen && document.exitFullscreen();
+  }
+});
+
+document.getElementById("canvasWrap").addEventListener("dblclick", async ()=>{
+  await enableGyro();
+  const el = document.documentElement;
+  if(!document.fullscreenElement){
+    el.requestFullscreen && el.requestFullscreen();
+  }
+});
+
+let inactivityTimer;
+function resetInactivity(){
+  document.body.classList.remove("hide-ui");
+  clearTimeout(inactivityTimer);
+  inactivityTimer = setTimeout(()=>{
+    document.body.classList.add("hide-ui");
+  },10000);
+}
+["mousedown","touchstart","keydown"].forEach(ev=>{
+  window.addEventListener(ev, resetInactivity, {passive:true});
+});
+resetInactivity();
+
+
+function render() {
+  resizeCanvas();
+
+  var lerpK = 0.12;
+  state.mouse.x += (state.target.x - state.mouse.x) * lerpK;
+  state.mouse.y += (state.target.y - state.mouse.y) * lerpK;
+
+  gl.viewport(0, 0, canvas.width, canvas.height);
+  gl.clear(gl.COLOR_BUFFER_BIT);
+  gl.useProgram(prog);
+
+  gl.activeTexture(gl.TEXTURE0);
+  gl.bindTexture(gl.TEXTURE_2D, texImage);
+  gl.activeTexture(gl.TEXTURE1);
+  gl.bindTexture(gl.TEXTURE_2D, texDepth);
+
+  var aspect = canvas.height > 0 ? canvas.width / canvas.height : 1.0;
+
+  var ox = state.mouse.x + (state.useGyro ? state.gyro.x * 0.7 : 0);
+  var oy = state.mouse.y - (state.useGyro ? state.gyro.y * 0.7 : 0);
+  gl.uniform2f(U.offset, ox, oy);
+  gl.uniform1f(U.strength,  state.strength * 0.4);
+  gl.uniform1f(U.zoom,      state.zoom);
+  gl.uniform1f(U.isometric, state.isometric);
+  gl.uniform1f(U.focus,     state.focus);
+  gl.uniform1f(U.aspect,    aspect);
+
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.enableVertexAttribArray(aPos);
+  gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
+  gl.drawArrays(gl.TRIANGLES, 0, 6);
+
+  requestAnimationFrame(render);
+}
+
+render();
+</script>
+<script>
+document.addEventListener("fullscreenchange", ()=>{
+  document.body.classList.toggle("fullscreen-mode", !!document.fullscreenElement);
+});
+</script></body>
+</html>
