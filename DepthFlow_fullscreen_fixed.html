@@ -180,7 +180,7 @@ body.fullscreen-mode .canvas-wrap{
   position:fixed !important;
   inset:0 !important;
   width:100vw !important;
-  height:100vh !important;
+  height:100dvh !important;
   aspect-ratio:auto !important;
   border-radius:0 !important;
   z-index:1000;
@@ -390,7 +390,7 @@ var FS = [
   '}',
   '',
   'void main() {',
-  '  vec2 uv  = coverUV(v_uv);',
+  '  vec2 uv  = coverUV(v_uv); /* cover mode */',
   '  vec2 cam = u_offset * u_strength;',
   '  cam.x   *= u_aspect;',
   '  vec2 finalUV = depthflowTrace(uv, cam);',
@@ -578,7 +578,14 @@ async function enableGyro(){
 window.addEventListener("deviceorientation", function(e){
   if(e.beta==null || e.gamma==null) return;
   state.gyro.x = clamp(e.gamma / 30, -1, 1);
-  state.gyro.y = clamp(e.beta / 30, -1, 1);
+  
+  const portrait = window.innerHeight > window.innerWidth;
+  if(portrait){
+    state.gyro.y = clamp(e.beta / 30, -1, 1);
+  }else{
+    state.gyro.y = clamp((-e.gamma) / 30, -1, 1);
+  }
+
 });
 
 const fsBtn = document.getElementById("fullscreenBtn");
